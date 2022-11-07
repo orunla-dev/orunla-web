@@ -11,7 +11,8 @@
           Books are fun with Orunla
         </h1>
         <p class="mt-3">
-          There's no better way to read than with Orunla. Getting started is simple.
+          There's no better way to read than with Orunla. Getting started is
+          simple.
         </p>
       </div>
       <div class="bg-primary bg-opacity-5 w-full p-5 h-1/3">
