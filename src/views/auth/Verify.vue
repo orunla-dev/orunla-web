@@ -7,7 +7,7 @@
       v-if="$route.query.mode === 'verifyEmail'"
     >
       <div class="flex items-end justify-start mb-5">
-        <img src="@/assets/Logo.png" class="w-3/6 md:w-5/12 text-center" />
+        <img src="@/assets/Logo.png" class="w-3/6 md:w-4/12 text-center" />
       </div>
       <div class="" v-if="verify.waiting">
         <h1 class="text-gray-500 font-bold text-2xl mb-5">
@@ -24,11 +24,11 @@
         shortly.
       </div>
       <div class="" v-else-if="verify.error">
-        <h1 class="text-red-500 font-bold text-2xl mb-5">
+        <h1 class="text-red-500 font-bold text-3xl mb-5">
           Something doesn't look right
         </h1>
         An Error occured while verifying your email address. Click the link sent
-        to your email again.
+        to your email to try again
         <p class="text-red-500 text-xs mt-5">{{ verify.message }}</p>
       </div>
     </div>

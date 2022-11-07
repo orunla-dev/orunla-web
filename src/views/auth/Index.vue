@@ -1,6 +1,5 @@
 <template>
   <div>
-    <router-link to="/auth/register">Register</router-link>
     <router-view />
   </div>
 </template>

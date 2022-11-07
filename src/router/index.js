@@ -14,7 +14,7 @@ function guard(to, from, next) {
       localStorage.setItem(UID, user.uid);
       next();
     } else {
-      next("/auth/login");
+      next("/auth");
     }
   });
 }
@@ -47,10 +47,15 @@ const routes = [
   },
   {
     path: "/auth",
-    name: "AuthPage",
+    name: "AuthBase",
     component: () =>
       import(/* webpackChunkName: "auth" */ "../views/auth/Index.vue"),
     children: [
+      {
+        path: "/",
+        name: "AuthPage",
+        component: () => import("../views/auth/Auth.vue"),
+      },
       {
         path: "register",
         name: "RegisterPage",
