@@ -3,7 +3,13 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
+
 import "./assets/tailwind.css";
+import "./assets/icofont.min.css";
+
+import "./plugins/element.js";
+import "./plugins/vee-validate.js";
+import "./plugins/vue-meta.js";
 
 Vue.config.productionTip = false;
 
