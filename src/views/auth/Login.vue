@@ -2,7 +2,7 @@
   <div
     class="h-screen bg-white overflow-hidden px-10 py-24 md:white flex justify-center items-center flex-col"
   >
-    <div class="rounded-md shadow-md p-5 w-full h-full md:w-1/4">
+    <div class="rounded-md shadow-md p-5 w-full md:w-1/4">
       <div class="flex items-end justify-start mb-5">
         <img src="@/assets/Logo.png" class="w-3/6 md:w-5/12 text-center" />
       </div>
@@ -33,9 +33,23 @@
             v-slot="{ errors }"
             rules="required|min:8"
           >
-            <label class="font-semibold text-primary mb-1 block mt-3">
-              Password
-            </label>
+            <div class="mb-1 mt-5 flex justify-between">
+              <label class="font-semibold text-primary block">Password</label>
+              <router-link
+                v-if="$route.query.continue !== undefined"
+                :to="`/auth/reset-password?continue=${$route.query.continue}`"
+                class="text-xs underline"
+              >
+                Reset Password
+              </router-link>
+              <router-link
+                v-else
+                to="/auth/reset-password"
+                class="text-xs underline"
+              >
+                Reset Password
+              </router-link>
+            </div>
             <el-input
               placeholder="Min. 8 alphanumeric"
               :type="show ? 'password' : 'text'"
@@ -71,6 +85,14 @@
           <p class="mt-5 text-center">
             New to Orunla?
             <router-link
+              v-if="$route.query.continue !== undefined"
+              :to="`/auth/register?continue=${$route.query.continue}`"
+              class="text-primary font-semibold underline"
+            >
+              Register account
+            </router-link>
+            <router-link
+              v-else
               to="/auth/register"
               class="text-primary font-semibold underline"
             >
@@ -114,7 +136,7 @@ export default {
         content: "Log In to Orunla Africa.",
       },
     ],
-    title: "Log In | Orunla Africa",
+    title: "Log In",
   },
   methods: {
     signIn() {
@@ -134,7 +156,11 @@ export default {
             // Fetch his details
             this.fetchUser(user.uid);
           }
-          vm.$router.push("/");
+          if (this.$route.query.continue) {
+            vm.$router.push(this.$route.query.continue);
+          } else {
+            vm.$router.push("/");
+          }
         })
         .catch((error) => {
           this.$message.error(error.message);

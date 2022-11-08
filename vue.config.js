@@ -8,10 +8,10 @@ module.exports = {
     description:
       "Readers are leaders, we are on a mission to make everyone a leader.",
     categories: ["utilities", "productivity", "books", "education"],
-    background_color: "#53be82",
+    background_color: "#fff",
     name: "Orunla Africa",
-    themeColor: "#53be82",
-    msTileColor: "#53be82",
+    themeColor: "#fff",
+    msTileColor: "#fff",
     appleMobileWebAppCapable: "yes",
     appleMobileWebAppStatusBarStyle: "default",
     assetsVersion: version,

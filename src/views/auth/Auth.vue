@@ -2,7 +2,7 @@
   <div
     class="h-screen bg-white overflow-hidden px-10 py-16 md:white flex justify-center items-center flex-col"
   >
-    <div class="rounded-md shadow-md w-full h-full md:w-1/4 overflow-hidden">
+    <div class="rounded-md shadow-md w-full md:w-1/4 overflow-hidden">
       <div class="h-2/3 p-5">
         <div class="flex items-end justify-start mb-5">
           <img src="@/assets/Logo.png" class="w-3/6 md:w-5/12 text-center" />

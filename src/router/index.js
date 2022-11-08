@@ -14,7 +14,7 @@ function guard(to, from, next) {
       localStorage.setItem(UID, user.uid);
       next();
     } else {
-      next("/auth");
+      next(`/auth/login?continue=${to.fullPath}`);
     }
   });
 }
@@ -81,6 +81,15 @@ const routes = [
         name: "VerificationPage",
         component: () =>
           import(/* webpackChunkName: "auth" */ "../views/auth/Verify.vue"),
+      },
+      {
+        path: "reset-password",
+        name: "ResetPassword",
+        component: () =>
+          import(
+            /* webpackChunkName: "auth"
+             */ "../views/auth/ResetPassword.vue"
+          ),
       },
     ],
   },

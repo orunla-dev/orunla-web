@@ -2,7 +2,7 @@
   <div
     class="h-screen bg-white overflow-hidden px-10 py-16 md:white flex justify-center items-center flex-col"
   >
-    <div class="rounded-md shadow-md p-5 w-full h-full md:w-1/4">
+    <div class="rounded-md shadow-md p-5 w-full md:w-1/4">
       <div class="flex items-end justify-start mb-5">
         <img src="@/assets/Logo.png" class="w-3/6 md:w-5/12 text-center" />
       </div>
@@ -101,6 +101,14 @@
           <p class="mt-5 text-center">
             Already have an account?
             <router-link
+              v-if="$route.query.continue !== undefined"
+              :to="`/auth/login?continue=${$route.query.continue}`"
+              class="text-primary font-semibold underline"
+            >
+              log in
+            </router-link>
+            <router-link
+              v-else
               to="/auth/login"
               class="text-primary font-semibold underline"
             >
@@ -145,7 +153,7 @@ export default {
         content: "Register a free account with Orunla Africa.",
       },
     ],
-    title: "Register | Orunla Africa",
+    title: "Register",
   },
   methods: {
     signUp() {
@@ -160,7 +168,13 @@ export default {
               `A verification link has been sent to ${vm.auth.email}`
             );
           });
-          vm.$router.push("/auth/login");
+          if (this.$route.query.continue) {
+            vm.$router.push(
+              `/auth/login?continue=${this.$route.query.continue}`
+            );
+          } else {
+            vm.$router.push("/");
+          }
         })
         .catch((error) => {
           this.$message.error(error.message);
