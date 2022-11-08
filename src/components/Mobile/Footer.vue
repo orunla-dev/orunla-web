@@ -1,54 +1,54 @@
 <template>
   <div
-    class="z-40 fixed bottom-0 right-0 left-0 flex justify-between gap-3 bg-white px-5 shadow-2xl"
+    class="fixed z-20 bottom-0 right-0 left-0 flex justify-between gap-3 bg-white px-5 shadow-2xl"
   >
     <router-link
       to="/"
-      :class="$route.path === '/' ? 'border-primary' : 'border-white'"
-      class="text-primary font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
-      v-slot="{ isActive, href, navigate }"
+      :class="
+        $route.path === '/'
+          ? 'border-primary text-primary'
+          : 'border-white text-gray-700'
+      "
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t"
     >
-      <a :href="href" @click="navigate">
-        <home-icon color="#342B8E" :size="30" />
-        Home
-      </a>
+      <i class="icofont-ui-home text-3xl"></i>
+      Home
     </router-link>
     <router-link
       to="/books"
       :class="
-        $route.path.includes('/books') ? 'border-primary' : 'border-white'
+        $route.path.includes('/books')
+          ? 'border-primary text-primary'
+          : 'border-white text-gray-700'
       "
-      class="text-primary font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
-      v-slot="{ isActive, href, navigate }"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
     >
-      <a :href="href" @click="navigate">
-        <book-icon color="#342B8E" :size="30" />
-        Books
-      </a>
+      <i class="icofont-book text-3xl"></i>
+      Books
     </router-link>
     <router-link
       to="/lists"
       :class="
-        $route.path.includes('/lists') ? 'border-primary' : 'border-white'
+        $route.path.includes('/lists')
+          ? 'border-primary text-primary'
+          : 'border-white text-gray-700'
       "
-      class="text-primary font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
-      v-slot="{ isActive, href, navigate }"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
     >
-      <a :href="href" @click="navigate">
-        <list-icon color="#342B8E" :size="30" />
-        Lists
-      </a>
+      <i class="icofont-list text-3xl"></i>
+      Lists
     </router-link>
     <router-link
       to="/me"
-      :class="$route.path.includes('/me') ? 'border-primary' : 'border-white'"
-      class="text-primary font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
-      v-slot="{ isActive, href, navigate }"
+      :class="
+        $route.path.includes('/me')
+          ? 'border-primary text-primary'
+          : 'border-white text-gray-700'
+      "
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
     >
-      <a :href="href" @click="navigate">
-        <user-icon color="#342B8E" :size="30" />
-        Profile
-      </a>
+      <i class="icofont-ui-user text-3xl"></i>
+      Profile
     </router-link>
   </div>
 </template>
@@ -56,11 +56,6 @@
 <script>
 export default {
   name: "MobileFooter",
-  components: {
-    HomeIcon: () => import("@/assets/icons/HomeIcon.vue"),
-    BookIcon: () => import("@/assets/icons/BookIcon.vue"),
-    ListIcon: () => import("@/assets/icons/ListIcon.vue"),
-    UserIcon: () => import("@/assets/icons/UserIcon.vue"),
-  },
+  components: {},
 };
 </script>

@@ -146,7 +146,6 @@ export default {
       signInWithEmailAndPassword(auth, this.auth.email, this.auth.password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
           vm.$message.success("Logged in successfully");
           localStorage.setItem(UID, user.uid);
           if (user.emailVerified === false) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-secondary bg-opacity-10 min-h-screen">
+  <div class="bg-gray-50 min-h-screen">
     <Header />
     <router-view class="my-16" />
     <Footer />
