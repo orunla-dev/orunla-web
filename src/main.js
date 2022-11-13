@@ -11,7 +11,10 @@ import "./plugins/element.js";
 import "./plugins/vee-validate.js";
 import "./plugins/vue-meta.js";
 
+import moment from "moment";
+
 Vue.config.productionTip = false;
+Vue.prototype.moment = moment;
 
 new Vue({
   router,

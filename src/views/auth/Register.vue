@@ -125,11 +125,7 @@
 </template>
 
 <script>
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "@firebase/auth";
-import { auth } from "@/config/firebase";
+import { supabase } from "@/config/supabase";
 
 export default {
   name: "RegisterView",
@@ -156,29 +152,28 @@ export default {
     title: "Register",
   },
   methods: {
-    signUp() {
+    async signUp() {
       this.submitting = true;
-      const vm = this;
-
-      createUserWithEmailAndPassword(auth, this.auth.email, this.auth.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          sendEmailVerification(user).then(() => {
-            this.$message.info(
-              `A verification link has been sent to ${vm.auth.email}`
-            );
-          });
-          if (this.$route.query.continue) {
-            vm.$router.push(
-              `/auth/login?continue=${this.$route.query.continue}`
-            );
-          } else {
-            vm.$router.push("/");
-          }
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email: this.auth.email,
+          password: this.auth.password,
         });
+        if (error) {
+          throw Error(error);
+        } else {
+          if (data.user) {
+            this.$message.success(
+              "Account created. An email has been sent to you for verification."
+            );
+            setTimeout(() => {
+              this.$router.push("/auth/login");
+            }, 3000);
+          }
+        }
+      } catch (error) {
+        this.$message.error(error);
+      }
       this.submitting = false;
     },
   },

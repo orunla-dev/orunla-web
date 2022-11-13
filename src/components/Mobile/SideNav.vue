@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import { signOut } from "@firebase/auth";
-import { auth } from "@/config/firebase";
+// import { signOut } from "@firebase/auth";
+// import { auth } from "@/config/firebase";
 
 export default {
   name: "SideNav",
@@ -100,15 +100,15 @@ export default {
       }
     },
     logUserOut() {
-      const vm = this;
-      signOut(auth)
-        .then(() => {
-          vm.$message.info("You're logged out");
-          vm.$router.push("/auth");
-        })
-        .catch((error) => {
-          vm.$message.error(error.message);
-        });
+      // const vm = this;
+      // signOut(auth)
+      //   .then(() => {
+      //     vm.$message.info("You're logged out");
+      //     vm.$router.push("/auth");
+      //   })
+      //   .catch((error) => {
+      //     vm.$message.error(error.message);
+      //   });
     },
   },
 };

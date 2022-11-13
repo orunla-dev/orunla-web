@@ -9,9 +9,9 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t hover:bg-primary hover:bg-opacity-20"
     >
-      <i class="icofont-ui-home text-3xl"></i>
+      <i class="icofont-ui-home text-xl"></i>
       Home
     </router-link>
     <router-link
@@ -21,9 +21,9 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
     >
-      <i class="icofont-book text-3xl"></i>
+      <i class="icofont-book text-xl"></i>
       Books
     </router-link>
     <router-link
@@ -33,9 +33,9 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
     >
-      <i class="icofont-list text-3xl"></i>
+      <i class="icofont-list text-xl"></i>
       Lists
     </router-link>
     <router-link
@@ -45,9 +45,9 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
     >
-      <i class="icofont-ui-user text-3xl"></i>
+      <i class="icofont-ui-user text-xl"></i>
       Profile
     </router-link>
   </div>

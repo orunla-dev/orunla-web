@@ -2,21 +2,21 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Index from "../views/Index.vue";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../config/firebase";
 import { UID } from "../utils/constants";
+import { supabase } from "../config/supabase";
 
 Vue.use(VueRouter);
 
-function guard(to, from, next) {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      localStorage.setItem(UID, user.uid);
-      next();
-    } else {
-      next(`/auth/login?continue=${to.fullPath}`);
-    }
-  });
+async function guard(to, from, next) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    localStorage.setItem(UID, user.id);
+    next();
+  } else {
+    next(`/auth/login?continue=${to.fullPath}`);
+  }
 }
 
 const routes = [
@@ -92,6 +92,12 @@ const routes = [
           ),
       },
     ],
+  },
+  {
+    path: "/get-started",
+    name: "GetStartedPage",
+    component: () => import("../views/GetStarted.vue"),
+    beforeEnter: guard,
   },
   {
     path: "/about",

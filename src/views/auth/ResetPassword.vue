@@ -68,8 +68,8 @@
 </template>
 
 <script>
-import { sendPasswordResetEmail } from "@firebase/auth";
-import { auth } from "@/config/firebase";
+// import { sendPasswordResetEmail } from "@firebase/auth";
+// import { auth } from "@/config/firebase";
 
 export default {
   name: "ResetPasswordView",
@@ -96,23 +96,23 @@ export default {
   methods: {
     resetPassword() {
       this.submitting = true;
-      const vm = this;
+      // const vm = this;
 
-      sendPasswordResetEmail(auth, this.auth.email)
-        .then(() => {
-          vm.$message.success("Password reset email sent");
-          if (this.$route.query.continue) {
-            vm.$router.push(
-              `/auth/login?continue=${this.$route.query.continue}`
-            );
-          } else {
-            vm.$router.push("/auth/login");
-          }
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
-        });
-      this.submitting = false;
+      //   sendPasswordResetEmail(auth, this.auth.email)
+      //     .then(() => {
+      //       vm.$message.success("Password reset email sent");
+      //       if (this.$route.query.continue) {
+      //         vm.$router.push(
+      //           `/auth/login?continue=${this.$route.query.continue}`
+      //         );
+      //       } else {
+      //         vm.$router.push("/auth/login");
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       this.$message.error(error.message);
+      //     });
+      //   this.submitting = false;
     },
   },
 };

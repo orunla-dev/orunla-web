@@ -127,8 +127,8 @@
 </template>
 
 <script>
-import { applyActionCode, updatePassword } from "@firebase/auth";
-import { auth } from "@/config/firebase";
+// import { applyActionCode, updatePassword } from "@firebase/auth";
+// import { auth } from "@/config/firebase";
 
 export default {
   name: "verificationPage",
@@ -153,33 +153,33 @@ export default {
   methods: {
     resetPassword() {
       this.submitting = true;
-      const vm = this;
-      updatePassword(auth, this.auth.password)
-        .then(() => {
-          vm.$message.success("Password updated successfully, please log in");
-          vm.$router.push("/auth/login");
-        })
-        .catch((error) => {
-          vm.$message.error(error.message);
-          vm.submitting = false;
-        });
+      // const vm = this;
+      // updatePassword(auth, this.auth.password)
+      //   .then(() => {
+      //     vm.$message.success("Password updated successfully, please log in");
+      //     vm.$router.push("/auth/login");
+      //   })
+      //   .catch((error) => {
+      //     vm.$message.error(error.message);
+      //     vm.submitting = false;
+      //   });
     },
     verifyEmail() {
-      const vm = this;
-      applyActionCode(auth, this.$route.query.oobCode)
-        .then((response) => {
-          vm.verify.waiting = false;
-          vm.verify.success = true;
-          console.log(response);
-          setTimeout(() => {
-            vm.$router.push("/auth/login");
-          }, 5000);
-        })
-        .catch((error) => {
-          vm.verify.waiting = false;
-          vm.verify.error = true;
-          vm.verify.message = error.message;
-        });
+      // const vm = this;
+      // applyActionCode(auth, this.$route.query.oobCode)
+      //   .then((response) => {
+      //     vm.verify.waiting = false;
+      //     vm.verify.success = true;
+      //     console.log(response);
+      //     setTimeout(() => {
+      //       vm.$router.push("/auth/login");
+      //     }, 5000);
+      //   })
+      //   .catch((error) => {
+      //     vm.verify.waiting = false;
+      //     vm.verify.error = true;
+      //     vm.verify.message = error.message;
+      //   });
     },
   },
   mounted() {

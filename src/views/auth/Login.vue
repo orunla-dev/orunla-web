@@ -110,13 +110,11 @@
 
 <script>
 import { UID } from "@/utils/constants";
-
-import { signInWithEmailAndPassword } from "@firebase/auth";
-import { auth, db } from "@/config/firebase";
-import { doc, getDoc } from "@firebase/firestore";
+import { supabase } from "@/config/supabase";
+import { fetchProfile } from "@/services/profile";
 
 export default {
-  name: "RegisterView",
+  name: "LoginView",
   data() {
     return {
       auth: {
@@ -139,42 +137,31 @@ export default {
     title: "Log In",
   },
   methods: {
-    signIn() {
+    async signIn() {
       this.submitting = true;
-      const vm = this;
-
-      signInWithEmailAndPassword(auth, this.auth.email, this.auth.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          vm.$message.success("Logged in successfully");
-          localStorage.setItem(UID, user.uid);
-          if (user.emailVerified === false) {
-            vm.$message.info("Please verify your email");
-            vm.$router.push("/auth/send-verification");
-          } else {
-            // Fetch his details
-            this.fetchUser(user.uid);
-          }
-          if (this.$route.query.continue) {
-            vm.$router.push(this.$route.query.continue);
-          } else {
-            vm.$router.push("/");
-          }
-        })
-        .catch((error) => {
-          this.$message.error(error.message);
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          ...this.auth,
         });
-      this.submitting = false;
-    },
-    async fetchUser(uid) {
-      const docRef = doc(db, "users", uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        this.$store.commit("SET_USER", docSnap.data());
-      } else {
-        this.$message.info("Error occured");
+        if (error) throw Error(error);
+        if (data.user) {
+          localStorage.setItem(UID, data.session.user.id);
+          this.$message.success("Welcome back, champ!");
+          await fetchProfile(data.session.user.id)
+            .then((response) => {
+              this.$store.commit("SET_USER", response[0]);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          setTimeout(() => {
+            this.$router.replace("/");
+          }, 3000);
+        }
+      } catch (error) {
+        this.$message.error(error);
       }
+      this.submitting = false;
     },
   },
 };

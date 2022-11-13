@@ -1,6 +1,6 @@
 <template>
   <header
-    class="flex justify-between items-center fixed top-0 right-0 left-0 px-20 py-6"
+    class="flex justify-between items-center fixed top-0 right-0 left-0 px-20 py-6 bg-white"
   >
     <router-link to="/" title="Go back home">
       <img src="@/assets/Logo.png" class="w-24" />
