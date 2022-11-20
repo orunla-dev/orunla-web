@@ -1,45 +1,44 @@
 <template>
   <div>
-    <div class="my-3 md:my-0 md:mb-10">
+    <div class="my-3 md:my-0 md:mb-10" v-if="reading.length > 0">
       <h1 class="text-2xl font-bold text-primary">Continue reading</h1>
       <div class="flex gap-5 overflow-x-auto py-5">
-        <div
+        <router-link
+          :to="`/read/${book.books.isbn}`"
           class="w-5/6 h-32 md:w-2/6 p-2 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
-          v-for="(book, index) in books"
+          v-for="(book, index) in reading"
           :key="index"
         >
           <img
-            :src="book.img"
+            :src="book.books.img"
             class="h-full w-auto rounded-md"
-            :alt="book.title"
+            :alt="book.books.title"
           />
           <div class="">
             <h3 class="font-bold text-lg text-primary line-clamp-1">
-              {{ book.title }}
+              {{ book.books.title }}
             </h3>
-            <p class="text-sm my-2 line-clamp-2">{{ book.sub_title }}</p>
-            <star-rating :grade="book.rating" />
+            <p class="text-sm my-2 line-clamp-2">{{ book.books.sub_title }}</p>
+            <star-rating :grade="book.books.rating" />
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
-    <div class="">
-      <h2 class="text-2xl font-bold text-primary">
-        Based on what you searched
-      </h2>
-      <div
-        class="flex gap-5 md:gap-10 md:flex-wrap overflow-x-auto md:overflow-hidden py-5"
-      >
+    <div>
+      <h2 class="text-2xl font-bold text-primary">Books you might like</h2>
+      <div class="flex justify-between gap-3 md:gap-10 flex-wrap py-5">
         <div
-          class="w-2/3 md:w-1/6 border rounded-md overflow-hidden flex-shrink-0 p-5 flex flex-col items-center cursor-pointer"
-          v-for="(book, index) in books"
-          :key="`search-${index}`"
+          class="w-36 md:w-52 border rounded-md overflow-hidden flex-shrink-1 p-5 flex flex-col items-center cursor-pointer"
+          v-for="book in books"
+          :key="book.isbn"
           @click="previewBook(book)"
         >
-          <img :src="book.img" class="w-1/2 rounded-md" />
+          <img :src="book.img" class="w-5/6 rounded-md" />
           <div class="mt-3 text-center">
-            <h2 class="text-xl font-bold text-primary">{{ book.title }}</h2>
-            <h3 class="text-lg my-2">
+            <h2 class="text-lg font-bold text-primary line-clamp-2">
+              {{ book.title }}
+            </h2>
+            <h3 class="text-sm md:text-lg my-2">
               {{
                 book.authors.fullname ||
                 book.authors.profiles.full_name ||
@@ -51,8 +50,16 @@
         </div>
       </div>
     </div>
+    <div class="flex items-center justify-center" v-if="loading">
+      <loading />
+    </div>
     <mobile-book-preview
       v-if="breakpoints.smAndDown && bookPreview.open"
+      :book="bookPreview.data"
+      @close="closePreviewBook"
+    />
+    <desktop-book-preview
+      v-if="breakpoints.mdAndUp && bookPreview.open"
       :book="bookPreview.data"
       @close="closePreviewBook"
     />
@@ -61,18 +68,27 @@
 
 <script>
 import breakpoints from "@/utils/breakpoints.js";
-import { fetchBooks } from "@/services/books";
+import { fetchBooks, fetchUserReadingList } from "@/services/books";
+import { UID } from "@/utils/constants";
 
 export default {
   name: "Home",
   components: {
     StarRating: () => import("@/components/Base/StarRating.vue"),
+    Loading: () => import("@/components/Base/Loading.vue"),
     MobileBookPreview: () => import("@/components/Mobile/BookPreview.vue"),
+    DesktopBookPreview: () => import("@/components/Desktop/BookPreview.vue"),
   },
   data() {
     return {
       breakpoints,
       books: [],
+      infiniteScroll: {
+        start: 0,
+        end: 50,
+        rangeError: false, // To handle having an endless loop of calls that returns HTTP RangeError
+      },
+      loading: true,
       bookPreview: {
         open: false,
         data: {},
@@ -82,6 +98,9 @@ export default {
   computed: {
     user() {
       return this.$store.state.user;
+    },
+    reading() {
+      return this.$store.state.user_reading;
     },
   },
   methods: {
@@ -94,11 +113,60 @@ export default {
       this.bookPreview.open = false;
     },
     async fetchAllBooks() {
-      this.books = await fetchBooks();
+      this.loading = true;
+      await fetchBooks(this.infiniteScroll)
+        .then((response) => {
+          if (this.books.length < 0) {
+            this.books = response;
+          } else {
+            this.books = [...this.books, ...response];
+          }
+          this.loading = false;
+          this.infiniteScroll.start += this.infiniteScroll.end;
+          this.infiniteScroll.end += 50;
+        })
+        .catch((error) => {
+          if (this.infiniteScroll.start === 0) {
+            this.$message.error(error.message);
+          } else {
+            if (error.code === "PGRST103") {
+              this.infiniteScroll.rangeError = true;
+            }
+          }
+          this.loading = false;
+        });
+    },
+    async fetchReadingList() {
+      await fetchUserReadingList(localStorage.getItem(UID))
+        .then((response) => {
+          this.$store.commit("SET_READING", response);
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+    },
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow =
+          Math.max(
+            window.pageYOffset,
+            document.documentElement.scrollTop,
+            document.body.scrollTop
+          ) +
+            window.innerHeight ===
+          document.documentElement.offsetHeight;
+
+        if (bottomOfWindow) {
+          if (!this.infiniteScroll.rangeError) this.fetchAllBooks();
+        }
+      };
     },
   },
   mounted() {
+    // Initially load some items.
     this.fetchAllBooks();
+    this.fetchReadingList();
+    this.scroll();
   },
 };
 </script>

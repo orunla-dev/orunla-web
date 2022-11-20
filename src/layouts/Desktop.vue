@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { updateProfile } from "@/services/profile";
+import { updateProfile, fetchProfile } from "@/services/profile";
 import { UID } from "@/utils/constants";
 
 export default {
@@ -84,6 +84,15 @@ export default {
       if (this.user.next_sub_date === null) {
         this.trialModal = true;
       }
+    },
+    async fetchUserProfile() {
+      await fetchProfile(localStorage.getItem(UID))
+        .then(async (response) => {
+          this.$store.commit("SET_USER", response[0]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     async startTrial() {
       this.submitting = true;

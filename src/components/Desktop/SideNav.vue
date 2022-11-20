@@ -60,22 +60,19 @@
 </template>
 
 <script>
-// import { signOut } from "@firebase/auth";
-// import { auth } from "@/config/firebase";
+import { supabase } from "@/config/supabase";
 
 export default {
   name: "DesktopSideNav",
   methods: {
-    logUserOut() {
-      // const vm = this;
-      // signOut(auth)
-      //   .then(() => {
-      //     vm.$message.info("You're logged out");
-      //     vm.$router.push("/auth");
-      //   })
-      //   .catch((error) => {
-      //     vm.$message.error(error.message);
-      //   });
+    async logUserOut() {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        this.$message.error(error);
+      } else {
+        this.$message.info("You've been logged out.");
+        this.$router.push("/auth");
+      }
     },
   },
 };

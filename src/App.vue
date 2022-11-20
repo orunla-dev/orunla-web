@@ -1,6 +1,6 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
-  <div id="app">
+  <div id="app" ref="main">
     <router-view />
   </div>
 </template>

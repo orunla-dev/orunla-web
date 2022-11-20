@@ -57,7 +57,38 @@
           :class="tab === 'list' ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
         ></i>
       </div>
-      <div class="bg-gray-300 px-5 py-2 h-52" v-if="tab === 'list'">List</div>
+      <div class="bg-gray-200 px-5 py-2 h-52" v-if="tab === 'list'">
+        <h3 class="text-xl mb-3" v-if="lists.length > 0">
+          Titles you've saved
+        </h3>
+        <div class="flex gap-5 overflow-x-auto" v-if="lists.length > 0">
+          <router-link
+            :to="`/read/${list.books.isbn}`"
+            class="flex gap-3 w-48 h-32 flex-shrink-0 border-r border-gray-300 pr-3"
+            v-for="list in lists"
+            :key="list.id"
+          >
+            <img :src="list.books.img" class="h-1/2 rounded-md" />
+            <div class="">
+              <p class="font-semibold line-clamp-3">{{ list.books.title }}</p>
+              <p class="text-sm">
+                {{
+                  list.books.authors.fullname ||
+                  list.books.authors.profiles.full_name
+                }}
+              </p>
+            </div>
+          </router-link>
+        </div>
+        <div class="my-5" v-else>
+          <div class="text-center text-sm">
+            <i class="icofont-list text-4xl"></i>
+            <h3 class="text-xl my-3">Nothing here</h3>
+            Adding books to your list is a nice way to remind yourself of books
+            you want to read later.
+          </div>
+        </div>
+      </div>
       <router-link
         to="/me/notification"
         class="p-5 flex justify-between items-center border-t-4 bg-gray-300"
@@ -81,8 +112,7 @@
 </template>
 
 <script>
-// import { signOut } from "@firebase/auth";
-// import { auth } from "@/config/firebase";
+import { supabase } from "@/config/supabase";
 
 export default {
   name: "SideNav",
@@ -90,6 +120,11 @@ export default {
     return {
       tab: "",
     };
+  },
+  computed: {
+    lists() {
+      return this.$store.state.user_list;
+    },
   },
   methods: {
     changeTab(tab) {
@@ -99,16 +134,14 @@ export default {
         this.tab = tab;
       }
     },
-    logUserOut() {
-      // const vm = this;
-      // signOut(auth)
-      //   .then(() => {
-      //     vm.$message.info("You're logged out");
-      //     vm.$router.push("/auth");
-      //   })
-      //   .catch((error) => {
-      //     vm.$message.error(error.message);
-      //   });
+    async logUserOut() {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        this.$message.error(error);
+      } else {
+        this.$message.info("You've been logged out.");
+        this.$router.push("/auth");
+      }
     },
   },
 };

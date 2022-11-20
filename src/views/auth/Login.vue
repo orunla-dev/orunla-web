@@ -111,7 +111,8 @@
 <script>
 import { UID } from "@/utils/constants";
 import { supabase } from "@/config/supabase";
-import { fetchProfile } from "@/services/profile";
+import { fetchProfile, fetchNotification } from "@/services/profile";
+import { fetchList } from "@/services/books";
 
 export default {
   name: "LoginView",
@@ -148,20 +149,30 @@ export default {
           localStorage.setItem(UID, data.session.user.id);
           this.$message.success("Welcome back, champ!");
           await fetchProfile(data.session.user.id)
-            .then((response) => {
+            .then(async (response) => {
               this.$store.commit("SET_USER", response[0]);
+              // fetch reading, then list, then notifications
+              await fetchList(data.session.user.id).then(async (lists) => {
+                this.$store.commit("SET_USER_LIST", lists);
+                await fetchNotification(data.session.user.id).then(
+                  (response) => {
+                    this.$store.commit("SET_NOTIFICATION", response);
+                    setTimeout(() => {
+                      this.$router.replace("/");
+                      this.submitting = false;
+                    }, 1000);
+                  }
+                );
+              });
             })
             .catch((error) => {
               console.log(error);
             });
-          setTimeout(() => {
-            this.$router.replace("/");
-          }, 3000);
         }
       } catch (error) {
         this.$message.error(error);
+        this.submitting = false;
       }
-      this.submitting = false;
     },
   },
 };

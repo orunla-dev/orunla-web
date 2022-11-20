@@ -22,3 +22,14 @@ export function updateProfile(uid, payload) {
     resolve(data);
   });
 }
+
+export function fetchNotification(uid) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("notifications")
+      .select()
+      .eq("profiles_id", uid);
+    if (error) reject(error);
+    resolve(data);
+  });
+}

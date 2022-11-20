@@ -22,14 +22,13 @@ async function guard(to, from, next) {
 const routes = [
   {
     path: "/",
-    name: "App",
     component: Index,
     children: [
       {
         path: "/",
         name: "Homepage",
-        component: () => import("../views/Home.vue"),
         beforeEnter: guard,
+        component: () => import("../views/Home.vue"),
       },
       {
         path: "/profile",
@@ -43,11 +42,27 @@ const routes = [
           },
         ],
       },
+      {
+        path: "/books",
+        name: "BooksPageIndex",
+        component: () => import("../views/books/Index.vue"),
+      },
+      {
+        // /books/{isbn - must be a number}/{book_title - optional}
+        path: "/books/:isbn(\\d+)/:title?",
+        name: "BookPage",
+        component: () => import("../views/books/Book.vue"),
+      },
     ],
   },
   {
+    path: "/read/:isbn(\\d+)",
+    name: "ReaderPage",
+    component: () => import("../views/ReaderPage.vue"),
+    beforeEnter: guard,
+  },
+  {
     path: "/auth",
-    name: "AuthBase",
     component: () =>
       import(/* webpackChunkName: "auth" */ "../views/auth/Index.vue"),
     children: [
@@ -114,6 +129,9 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+  scrollBehavior() {
+    document.getElementById("app").scrollIntoView({ behavior: "smooth" });
+  },
 });
 
 export default router;

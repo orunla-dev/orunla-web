@@ -2,7 +2,9 @@
   <header
     class="bg-white flex justify-between items-center p-5 fixed top-0 right-0 left-0 z-40"
   >
-    <img src="@/assets/Logo.png" class="w-28" />
+    <router-link to="/">
+      <img src="@/assets/Logo.png" class="w-28" />
+    </router-link>
     <div class="flex gap-5">
       <router-link to="/search">
         <i class="icofont-search text-2xl text-primary"></i>

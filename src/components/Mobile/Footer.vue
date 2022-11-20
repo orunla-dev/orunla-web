@@ -21,7 +21,7 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t hover:bg-primary hover:bg-opacity-20"
     >
       <i class="icofont-book text-xl"></i>
       Books
@@ -33,7 +33,7 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t hover:bg-primary hover:bg-opacity-20"
     >
       <i class="icofont-list text-xl"></i>
       Lists
@@ -45,7 +45,7 @@
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "
-      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t-4 hover:bg-primary hover:bg-opacity-20"
+      class="font-semibold px-3 py-2 flex flex-col items-center justify-center border-t hover:bg-primary hover:bg-opacity-20"
     >
       <i class="icofont-ui-user text-xl"></i>
       Profile

@@ -27,7 +27,7 @@
         class="mt-20 -mb-16 mx-5 border-green-500 border p-3 rounded-md bg-green-500 bg-opacity-5"
       >
         <div class="text-sm mb-5">
-          <h1 class="font-bold">Complete your profile</h1>
+          <h1 class="font-bold text-xl">Complete your profile</h1>
           <p class="">Orunla is best experienced with a complete profile.</p>
         </div>
         <router-link to="/profile/edit">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { updateProfile } from "@/services/profile";
+import { updateProfile, fetchProfile } from "@/services/profile";
 import { UID } from "@/utils/constants";
 
 export default {
@@ -53,6 +53,7 @@ export default {
   data() {
     return {
       trialModal: false,
+      submitting: false,
     };
   },
   computed: {
@@ -73,6 +74,15 @@ export default {
       if (this.user.next_sub_date === null) {
         this.trialModal = true;
       }
+    },
+    async fetchUserProfile() {
+      await fetchProfile(localStorage.getItem(UID))
+        .then(async (response) => {
+          this.$store.commit("SET_USER", response[0]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     async startTrial() {
       this.submitting = true;
