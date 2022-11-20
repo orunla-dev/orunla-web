@@ -31,7 +31,7 @@
           <ValidationProvider
             name="Password"
             v-slot="{ errors }"
-            rules="required|alpha_num|min:8"
+            rules="required|min:8"
           >
             <label class="font-semibold text-primary mb-1 block mt-3">
               Password
@@ -168,7 +168,7 @@ export default {
             );
             setTimeout(() => {
               this.$router.push("/auth/login");
-            }, 3000);
+            }, 1000);
           }
         }
       } catch (error) {

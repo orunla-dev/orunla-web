@@ -22,9 +22,9 @@ export default {
   },
   methods: {
     async fetchPDF() {
-      import("pdfjs-dist/webpack")
-        .then((pdfjs) => pdfjs.getDocument(this.url))
-        .then((pdf) => (this.pdf = pdf));
+      // import("pdfjs-dist/webpack")
+      //   .then((pdfjs) => pdfjs.getDocument(this.url))
+      //   .then((pdf) => (this.pdf = pdf));
     },
   },
   mounted() {
