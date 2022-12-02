@@ -1,8 +1,15 @@
 <template>
   <div>
+    <div class="flex items-center gap-1 text-gray-600 mb-5">
+      <router-link to="/">Home</router-link>
+      <i class="icofont-thin-right mt-1 text-xl"></i>
+      <p class="font-semibold line-clamp-1">Books</p>
+    </div>
     <div>
       <h2 class="text-2xl font-bold text-primary">All titles</h2>
-      <div class="flex justify-center gap-5 md:gap-10 flex-wrap py-5">
+      <div
+        class="flex justify-center md:justify-start gap-5 md:gap-10 flex-wrap py-5"
+      >
         <div
           class="w-36 md:w-52 border rounded-md overflow-hidden flex-shrink-1 p-5 flex flex-col items-center cursor-pointer"
           v-for="book in books"

@@ -31,6 +31,12 @@ const routes = [
         component: () => import("../views/Home.vue"),
       },
       {
+        path: "/lists",
+        name: "UserListPage",
+        beforeEnter: guard,
+        component: () => import("../views/Lists.vue"),
+      },
+      {
         path: "/profile",
         name: "Profilepage",
         beforeEnter: guard,
@@ -41,6 +47,16 @@ const routes = [
             component: () => import("../views/profile/Edit.vue"),
           },
         ],
+      },
+      {
+        path: "/authors",
+        name: "AuthorsPageIndex",
+        component: () => import("../views/authors/Index.vue"),
+      },
+      {
+        path: "/authors/:authors_id",
+        name: "AuthorsPage",
+        component: () => import("../views/authors/Author.vue"),
       },
       {
         path: "/books",
@@ -130,7 +146,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
   scrollBehavior() {
-    document.getElementById("app").scrollIntoView({ behavior: "smooth" });
+    window.scrollTo(0, 5);
   },
 });
 

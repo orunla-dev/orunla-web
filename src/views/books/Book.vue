@@ -216,13 +216,13 @@
       </div>
       <div class="md:w-1/3 mt-5 md:mt-0 md:bg-gray-50 md:p-5 rounded-lg">
         <h2 class="text-xl font-bold">Related titles</h2>
-        <div class="flex gap-2 mt-5">
+        <div class="flex gap-10 md:gap-3 flex-wrap mt-5">
           <router-link
             :to="
               `/books/${book.isbn}/` +
               book.title.toLowerCase().replace(/ /g, '-')
             "
-            class="w-1/2 border rounded-md text-center p-3 hover:bg-gray-100"
+            class="w-32 md:w-32 border rounded-md text-center p-3 hover:bg-gray-100"
             :title="
               book.title + ' by ' + book.authors.fullname ||
               book.authors.profiles.full_name

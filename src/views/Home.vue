@@ -2,7 +2,7 @@
   <div>
     <div class="my-3 md:my-0 md:mb-10" v-if="reading.length > 0">
       <h1 class="text-2xl font-bold text-primary">Continue reading</h1>
-      <div class="flex gap-5 overflow-x-auto py-5">
+      <div class="flex gap-5 overflow-x-auto md:flex-wrap py-5">
         <router-link
           :to="`/read/${book.books.isbn}`"
           class="w-5/6 h-32 md:w-2/6 p-2 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
@@ -24,7 +24,7 @@
         </router-link>
       </div>
     </div>
-    <div>
+    <div v-if="!loading">
       <h2 class="text-2xl font-bold text-primary">Books you might like</h2>
       <div class="flex justify-between gap-3 md:gap-10 flex-wrap py-5">
         <div

@@ -63,7 +63,7 @@
         </h3>
         <div class="flex gap-5 overflow-x-auto" v-if="lists.length > 0">
           <router-link
-            :to="`/read/${list.books.isbn}`"
+            :to="`/books/${list.books.isbn}`"
             class="flex gap-3 w-48 h-32 flex-shrink-0 border-r border-gray-300 pr-3"
             v-for="list in lists"
             :key="list.id"
