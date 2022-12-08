@@ -111,8 +111,25 @@ export function fetchReadingInfo(uid, isbn) {
   });
 }
 
-// export function editReading(payload) {
-//   return new Promise(async (resolve, reject) => {
-//     const { data, error } = await supabase.from("now_reading")
-//   })
-// }
+export function editReading(payload) {
+  return new Promise(async (resolve, reject) => {
+    const { error } = await supabase
+      .from("now_reading")
+      .update({ page: payload.page })
+      .match({ profiles_id: payload.profiles_id, books_id: payload.books_id });
+    if (error) reject(error);
+    resolve();
+  });
+}
+
+export function markBookAsDone(payload) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("now_reading")
+      .update({ completed: true })
+      .match({ profiles_id: payload.profiles_id, books_id: payload.books_id })
+      .select();
+    if (error) reject(error);
+    resolve(data);
+  });
+}

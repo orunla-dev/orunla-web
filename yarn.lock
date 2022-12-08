@@ -9293,6 +9293,13 @@ vue-meta@^2.4.0:
   dependencies:
     deepmerge "^4.2.2"
 
+vue-pdf-app@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/vue-pdf-app/-/vue-pdf-app-2.1.0.tgz#71c2a91760b629b8e66023a4329c61ce95267058"
+  integrity sha512-eQUeDBdvwxBUvnrojBY+jfaKmwEVwHNC7be6eHreG1yxPSvPFoBzFa93411u15/Ze4NmZCIJKXEWvFz/RM6lxQ==
+  dependencies:
+    vue "^2.6.11"
+
 vue-router@^3.2.0:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.6.5.tgz#95847d52b9a7e3f1361cb605c8e6441f202afad8"
