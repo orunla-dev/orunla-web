@@ -43,7 +43,7 @@
       </div>
     </header>
     <section
-      class="pt-20 px-10 md:py-5 md:pt-16 overflow-auto flex gap-5"
+      class="pt-20 px-10 md:py-5 md:pt-16 overflow-auto flex gap-1"
       style="height: 100%"
     >
       <div class="w-full mb-10 md:w-3/4">
@@ -78,17 +78,104 @@
             </p>
           </div>
         </div>
-        <div class="overflow-y-scroll overflow-x-hidden mt-36 h-3/4">
-          {{ book }}
-          <input
-            :id="config.pageNumber"
-            type="number"
-            name="pageNumber"
-            style="width: 40px"
-          />
-          <span class="divider"></span>
-          <span :id="config.numPages"></span>
-          <span> pages</span>
+        <div class="py-3 mt-36 ml-3 mr-9 flex justify-between items-center">
+          <h1 class="text-xl">Notes:</h1>
+          <el-button
+            v-if="notes.length !== 0"
+            type="primary"
+            @click="newNoteModal = true"
+          >
+            <i class="icofont-plus mr-2"></i>
+            Add note
+          </el-button>
+        </div>
+        <div class="overflow-y-scroll relative overflow-x-hidden h-3/4">
+          <div
+            class="absolute top-0 bottom-0 right-0 left-0 z-10 bg-black bg-opacity-50 flex items-center justify-center"
+            v-if="newNoteModal"
+          >
+            <div class="bg-white w-full h-auto -mt-10 mx-5 rounded-lg p-5">
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 8, maxRows: 8 }"
+                placeholder="Write something inspirational from this page"
+                v-model="newNote.text"
+              />
+              <div class="mt-5" />
+              <el-button
+                type="primary"
+                class="w-full"
+                :loading="submitting"
+                :disabled="newNote.text === ''"
+                @click="saveNote()"
+              >
+                Save Note
+              </el-button>
+              <a
+                href="#close"
+                @click.prevent="newNoteModal = !newNoteModal"
+                class="block text-center mt-2 text-xs"
+              >
+                cancel
+              </a>
+            </div>
+          </div>
+          <div
+            class="h-full flex justify-center items-center"
+            v-if="notesLoading"
+          >
+            <loading />
+          </div>
+          <div class="h-full" v-else>
+            <div
+              class="text-center flex flex-col justify-center items-center h-full"
+              v-if="notes.length === 0"
+            >
+              <img src="@/assets/svgs/Notes.svg" class="w-2/3 inline" />
+              <h1 class="text-xl">You haven't jotted on this book, yet.</h1>
+              <p class="text-sm my-3">
+                Creating notes are easy, click on the button below.
+              </p>
+              <el-button type="primary" @click="newNoteModal = true">
+                <i class="icofont-plus mr-2"></i>
+                Add new note
+              </el-button>
+            </div>
+            <div class="p-5 pl-3 relative" v-else>
+              <div
+                class="border rounded-md p-3 mb-3 text-sm"
+                v-for="note in notes"
+                :key="note.id"
+              >
+                {{ note.text }}
+                <div
+                  class="border-t mt-5 pt-3 flex justify-between items-center"
+                >
+                  <div class="text-xs text-gray-500">
+                    Jotted in page: {{ note.pageNumber }}
+                  </div>
+                  <div
+                    class="cursor-pointer bg-red-50 hover:bg-red-200 py-1 px-2 rounded-sm"
+                    @click="deleteNote(note.id)"
+                    title="Delete this note"
+                  >
+                    <i class="icofont-ui-delete text-red-600"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden">
+            <input
+              :id="config.pageNumber"
+              type="number"
+              name="pageNumber"
+              style="width: 40px"
+            />
+            <span class="divider"></span>
+            <span :id="config.numPages"></span>
+            <span> pages</span>
+          </div>
         </div>
       </div>
     </section>
@@ -130,7 +217,7 @@
     </section>
     <div
       class="fixed top-20 mt-1 bottom-0 right-0 flex items-end md:hidden"
-      :class="notesPanel ? 'left-1' : 'left-auto'"
+      :class="notesPanel ? 'left-20' : 'left-auto'"
     >
       <div class="bg-secondary mb-10 ml-2 h-20 rounded-l-xl">
         <div
@@ -144,7 +231,94 @@
         class="bg-white border-l-2 border-secondary rounded-l w-full h-full overflow-y-auto p-5"
         :class="notesPanel ? 'block' : 'hidden'"
       >
-        {{ book }}
+        <div class="overflow-y-scroll relative overflow-x-hidden h-full">
+          <div
+            class="absolute top-0 bottom-0 right-0 left-0 z-10 bg-black bg-opacity-50 flex items-center justify-center"
+            v-if="newNoteModal"
+          >
+            <div class="bg-white w-full h-auto -mt-10 mx-5 rounded-lg p-5">
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 8, maxRows: 8 }"
+                placeholder="Write something inspirational from this page"
+                v-model="newNote.text"
+              />
+              <div class="mt-5" />
+              <el-button
+                type="primary"
+                class="w-full"
+                :loading="submitting"
+                :disabled="newNote.text === ''"
+                @click="saveNote()"
+              >
+                Save Note
+              </el-button>
+              <a
+                href="#close"
+                @click.prevent="newNoteModal = !newNoteModal"
+                class="block text-center mt-2 text-xs"
+              >
+                cancel
+              </a>
+            </div>
+          </div>
+          <div
+            class="h-full flex justify-center items-center"
+            v-if="notesLoading"
+          >
+            <loading />
+          </div>
+          <div class="h-full" v-else>
+            <div
+              class="text-center flex flex-col justify-center items-center h-full"
+              v-if="notes.length === 0"
+            >
+              <img src="@/assets/svgs/Notes.svg" class="w-2/3 inline" />
+              <h1 class="text-xl">You haven't jotted on this book, yet.</h1>
+              <p class="text-sm my-3">
+                Creating notes are easy, click on the button below.
+              </p>
+              <el-button type="primary" @click="newNoteModal = true">
+                <i class="icofont-plus mr-2"></i>
+                Add new note
+              </el-button>
+            </div>
+            <div class="p-5 pl-3 relative" v-else>
+              <div
+                class="border rounded-md p-3 mb-3 text-sm"
+                v-for="note in notes"
+                :key="note.id"
+              >
+                {{ note.text }}
+                <div
+                  class="border-t mt-5 pt-3 flex justify-between items-center"
+                >
+                  <div class="text-xs text-gray-500">
+                    Jotted in page: {{ note.pageNumber }}
+                  </div>
+                  <div
+                    class="cursor-pointer bg-red-50 hover:bg-red-200 py-1 px-2 rounded-sm"
+                    @click="deleteNote(note.id)"
+                    title="Delete this note"
+                  >
+                    <i class="icofont-ui-delete text-red-600"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="hidden">
+            <input
+              :id="config.pageNumber"
+              type="number"
+              name="pageNumber"
+              style="width: 40px"
+            />
+            <span class="divider"></span>
+            <span :id="config.numPages"></span>
+            <span> pages</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -157,6 +331,9 @@ import {
   addToReading,
   editReading,
   markBookAsDone,
+  fetchNotes,
+  addToNote,
+  deleteANote,
 } from "@/services/books";
 
 import { firstWord } from "@/utils/helpers";
@@ -170,7 +347,7 @@ export default {
   name: "ReaderView",
   components: {
     VuePdfApp,
-    // Loading: () => import("@/components/Base/Loading.vue"),
+    Loading: () => import("@/components/Base/Loading.vue"),
   },
   data() {
     return {
@@ -178,7 +355,7 @@ export default {
       loading: true,
       readingInfo: {},
       book: {},
-      info: [],
+      notes: [],
       config: {
         nextPage: "NextPage",
         presentationMode: "PresentationMode",
@@ -191,13 +368,16 @@ export default {
       markAsDoneLoading: false,
       markAdDoneModal: false,
       notesPanel: false,
+      notesLoading: true,
+      newNoteModal: false,
+      newNote: {
+        text: "",
+      },
+      submitting: false,
     };
   },
   methods: {
     pagesRendered(pdfApp) {
-      console.log(pdfApp);
-      // If on mobile
-      pdfApp.pdfSidebar.isOpen = false;
       this.pageInfo.pageNumber = pdfApp.page;
       this.pageInfo.totalPages = pdfApp.pagesCount;
       pdfApp.pdfViewer.eventBus.on("pagechanging", ({ pageNumber }) => {
@@ -279,6 +459,46 @@ export default {
           console.log(error);
         });
     },
+    async fetchAllNotes() {
+      this.notesLoading = true;
+      await fetchNotes(localStorage.getItem(UID), this.$route.params.isbn)
+        .then((response) => {
+          this.notes = response;
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+      this.notesLoading = false;
+    },
+    async saveNote() {
+      this.submitting = true;
+      const payload = {
+        profiles_id: localStorage.getItem(UID),
+        books_id: this.$route.params.isbn,
+        text: this.newNote.text,
+        pageNumber: this.pageInfo.pageNumber,
+      };
+      await addToNote(payload)
+        .then((response) => {
+          this.notes = response;
+          this.$message.success("New note saved");
+          this.newNoteModal = false;
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+      this.submitting = false;
+    },
+    async deleteNote(id) {
+      await deleteANote(id)
+        .then(() => {
+          this.notes = this.notes.filter((note) => note.id != id);
+          this.$message.success("Note deleted");
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+    },
   },
   watch: {
     isCompleted() {
@@ -301,6 +521,7 @@ export default {
   mounted() {
     this.fetchTitle();
     this.fetchReading();
+    this.fetchAllNotes();
   },
 };
 </script>

@@ -133,3 +133,33 @@ export function markBookAsDone(payload) {
     resolve(data);
   });
 }
+
+export function fetchNotes(uid) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("notes")
+      .select(`*, books(title)`)
+      .eq("profiles_id", uid);
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function addToNote(payload) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("notes")
+      .insert({ ...payload })
+      .select();
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function deleteANote(id) {
+  return new Promise(async (resolve, reject) => {
+    const { error } = await supabase.from("notes").delete().eq("id", id);
+    if (error) reject(error);
+    resolve();
+  });
+}
