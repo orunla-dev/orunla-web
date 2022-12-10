@@ -6,8 +6,8 @@
       <router-link to="/">
         <img src="@/assets/Logo.png" class="w-32" />
       </router-link>
-      <div class="flex items-center gap-3">
-        <div class="text-2xl mr-3 md:mr-10">
+      <div class="flex items-center gap-1">
+        <div class="text-xl mr-1 md:mr-10">
           {{ pageInfo.pageNumber }} / {{ pageInfo.totalPages }}
         </div>
         <div class="hidden md:block">
@@ -43,7 +43,7 @@
       </div>
     </header>
     <section
-      class="pt-20 px-10 md:py-5 md:pt-16 overflow-auto flex gap-1"
+      class="pt-20 px-2 md:px-10 md:py-5 md:pt-16 overflow-auto flex gap-1"
       style="height: 100%"
     >
       <div class="w-full mb-10 md:w-3/4">
@@ -59,7 +59,7 @@
             book.ebook || 'https://arkokoley.github.io/pdfvuer/nationStates.pdf'
           "
           theme="light"
-          :page-scale="100"
+          :page-scale="breakpoints.mdAndUp ? 100 : 55"
           :config="{ toolbar: false, sidebar: false, secondaryToolbar: false }"
           :id-config="config"
           @pages-rendered="pagesRendered"
@@ -78,13 +78,12 @@
             </p>
           </div>
         </div>
-        <div class="py-3 mt-36 ml-3 mr-9 flex justify-between items-center">
+        <div
+          v-if="notes.length !== 0"
+          class="py-3 mt-36 ml-3 mr-9 flex justify-between items-center"
+        >
           <h1 class="text-xl">Notes:</h1>
-          <el-button
-            v-if="notes.length !== 0"
-            type="primary"
-            @click="newNoteModal = true"
-          >
+          <el-button type="primary" @click="newNoteModal = true">
             <i class="icofont-plus mr-2"></i>
             Add note
           </el-button>
@@ -217,7 +216,7 @@
     </section>
     <div
       class="fixed top-20 mt-1 bottom-0 right-0 flex items-end md:hidden"
-      :class="notesPanel ? 'left-20' : 'left-auto'"
+      :class="notesPanel ? 'left-5' : 'left-auto'"
     >
       <div class="bg-secondary mb-10 ml-2 h-20 rounded-l-xl">
         <div
@@ -233,7 +232,20 @@
       >
         <div class="overflow-y-scroll relative overflow-x-hidden h-full">
           <div
-            class="absolute top-0 bottom-0 right-0 left-0 z-10 bg-black bg-opacity-50 flex items-center justify-center"
+            class="py-3 px-5 bg-white z-10 flex justify-between items-center fixed right-0 left-20"
+          >
+            <h1 class="text-xl">Notes:</h1>
+            <el-button
+              v-if="notes.length !== 0"
+              type="primary"
+              @click="newNoteModal = true"
+            >
+              <i class="icofont-plus mr-2"></i>
+              Add note
+            </el-button>
+          </div>
+          <div
+            class="absolute top-0 bottom-0 right-0 left-0 z-20 bg-black bg-opacity-50 flex items-center justify-center"
             v-if="newNoteModal"
           >
             <div class="bg-white w-full h-auto -mt-10 mx-5 rounded-lg p-5">
@@ -283,7 +295,7 @@
                 Add new note
               </el-button>
             </div>
-            <div class="p-5 pl-3 relative" v-else>
+            <div class="p-5 pl-3 mt-16 relative" v-else>
               <div
                 class="border rounded-md p-3 mb-3 text-sm"
                 v-for="note in notes"
@@ -480,8 +492,9 @@ export default {
       };
       await addToNote(payload)
         .then((response) => {
-          this.notes = response;
+          this.notes = [...this.notes, ...response];
           this.$message.success("New note saved");
+          this.newNote.text = "";
           this.newNoteModal = false;
         })
         .catch((error) => {

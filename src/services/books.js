@@ -134,12 +134,12 @@ export function markBookAsDone(payload) {
   });
 }
 
-export function fetchNotes(uid) {
+export function fetchNotes(uid, books_id) {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase
       .from("notes")
       .select(`*, books(title)`)
-      .eq("profiles_id", uid);
+      .match({ profiles_id: uid, books_id: books_id });
     if (error) reject(error);
     resolve(data);
   });
