@@ -78,12 +78,13 @@
             </p>
           </div>
         </div>
-        <div
-          v-if="notes.length !== 0"
-          class="py-3 mt-36 ml-3 mr-9 flex justify-between items-center"
-        >
+        <div class="py-3 mt-32 ml-3 mr-9 flex justify-between items-center">
           <h1 class="text-xl">Notes:</h1>
-          <el-button type="primary" @click="newNoteModal = true">
+          <el-button
+            type="primary"
+            @click="newNoteModal = true"
+            v-if="notes.length !== 0"
+          >
             <i class="icofont-plus mr-2"></i>
             Add note
           </el-button>
@@ -216,7 +217,7 @@
     </section>
     <div
       class="fixed top-20 mt-1 bottom-0 right-0 flex items-end md:hidden"
-      :class="notesPanel ? 'left-5' : 'left-auto'"
+      :class="notesPanel ? 'left-2' : 'left-auto'"
     >
       <div class="bg-secondary mb-10 ml-2 h-20 rounded-l-xl">
         <div

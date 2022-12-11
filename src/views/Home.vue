@@ -20,6 +20,7 @@
             </h3>
             <p class="text-sm my-2 line-clamp-2">{{ book.books.sub_title }}</p>
             <star-rating :grade="book.books.rating" />
+            {{ book.page }}/{{ book.books.totalPages }}
           </div>
         </router-link>
       </div>
@@ -144,6 +145,9 @@ export default {
         .catch((error) => {
           this.$message.error(error);
         });
+    },
+    readProgress(pageNumber, totalPages) {
+      return (pageNumber / totalPages) * 100;
     },
     scroll() {
       window.onscroll = () => {

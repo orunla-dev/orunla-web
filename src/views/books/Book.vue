@@ -192,17 +192,7 @@
             </div>
           </div>
         </div>
-        <!-- div class="my-5 border-b pb-10">
-        <h2 class="font-bold text-xl">Readers review</h2>
-        <div class="flex gap-3 mt-3">
-          <h2 class="text-4xl font-bold text-primary">{{ book.rating }}</h2>
-          <div class="">
-            <star-rating :grade="book.rating" class="text-lg" />
-            {{ reviews.length }}
-          </div>
-        </div>
-      </div --->
-        <div class="md:flex gap-3 md:mt-5 flex-wrap">
+        <div class="md:flex gap-3 md:mt-5 flex-wrap pb-5 border-b">
           <p class="">
             <abbr title="International Standard Book Number" class="font-bold"
               >ISBN:</abbr
@@ -212,6 +202,20 @@
           <p class=""><b>PUBLISHED:</b> {{ book.publish_date }}</p>
           <p class=""><b>PUBLISHER:</b> {{ book.publisher }}</p>
           <p class=""><b>PAGES:</b> {{ book.pages }}</p>
+        </div>
+        <div class="my-5 border-b pb-10">
+          <h2 class="font-bold text-xl">Readers review</h2>
+          <div class="flex gap-3 mt-3 overflow-x-auto">
+            <div
+              class="border p-5 rounded-lg w-3/6"
+              v-for="review in reviews"
+              :key="review.id"
+            >
+              <star-rating :grade="review.rating" />
+              <p class="text-md mt-3 mb-2">{{ review.message }}</p>
+              <p class="text-xs">{{ review.profiles.full_name }}</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="md:w-1/3 mt-5 md:mt-0 md:bg-gray-50 md:p-5 rounded-lg">
@@ -299,7 +303,7 @@ import { UID } from "@/utils/constants";
 export default {
   name: "BookPage",
   components: {
-    // StarRating: () => import("@/components/Base/StarRating.vue"),
+    StarRating: () => import("@/components/Base/StarRating.vue"),
     Loading: () => import("@/components/Base/Loading.vue"),
   },
   data() {
@@ -391,7 +395,7 @@ export default {
     async fetchTitleReview() {
       await fetchBookReview(this.$route.params.isbn)
         .then((response) => {
-          this.reviews = response[0];
+          this.reviews = response;
         })
         .catch((error) => {
           console.log(error);

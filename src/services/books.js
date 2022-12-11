@@ -39,7 +39,7 @@ export function fetchBookReview(isbn) {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase
       .from("reviews")
-      .select(`*`)
+      .select(`*, profiles(*)`)
       .eq("isbn", isbn);
     if (error) reject(error);
     resolve(data);
@@ -94,7 +94,7 @@ export function fetchUserReadingList(uid) {
     const { data, error } = await supabase
       .from("now_reading")
       .select(`*, books(*, authors(*, profiles(*)))`)
-      .eq("profiles_id", uid);
+      .match({ profiles_id: uid, completed: false });
     if (error) reject(error);
     resolve(data);
   });
