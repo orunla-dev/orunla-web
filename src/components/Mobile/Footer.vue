@@ -39,9 +39,9 @@
       Lists
     </router-link>
     <router-link
-      to="/me"
+      to="/profile"
       :class="
-        $route.path.includes('/me')
+        $route.path.includes('/profile')
           ? 'border-primary text-primary'
           : 'border-white text-gray-700'
       "

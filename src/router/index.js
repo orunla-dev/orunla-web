@@ -38,15 +38,15 @@ const routes = [
       },
       {
         path: "/profile",
-        name: "Profilepage",
         beforeEnter: guard,
-        children: [
-          {
-            path: "edit",
-            name: "EditProfilePage",
-            component: () => import("../views/profile/Edit.vue"),
-          },
-        ],
+        name: "ProfileHome",
+        component: () => import("../views/profile/Index.vue"),
+      },
+      {
+        path: "/profile/edit",
+        beforeEnter: guard,
+        name: "EditProfilePage",
+        component: () => import("../views/profile/Edit.vue"),
       },
       {
         path: "/authors",

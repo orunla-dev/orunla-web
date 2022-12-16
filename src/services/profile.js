@@ -17,7 +17,8 @@ export function updateProfile(uid, payload) {
     const { data, error } = await supabase
       .from("profiles")
       .update({ ...payload })
-      .eq("uid", uid);
+      .eq("uid", uid)
+      .select("*");
     if (error) reject(error);
     resolve(data);
   });
@@ -29,6 +30,17 @@ export function fetchNotification(uid) {
       .from("notifications")
       .select()
       .eq("profiles_id", uid);
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function checkUsername(username) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("username", username);
     if (error) reject(error);
     resolve(data);
   });

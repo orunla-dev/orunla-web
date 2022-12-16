@@ -29,7 +29,10 @@
             </p>
           </div>
         </div>
-        <div class="pt-3" v-else-if="user.username === null">
+        <div
+          class="pt-3"
+          v-else-if="user.username === null && $route.path != '/profile/edit'"
+        >
           <div
             class="mb-5 border-green-500 border p-5 rounded-md bg-green-500 bg-opacity-5"
           >

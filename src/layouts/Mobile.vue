@@ -22,7 +22,10 @@
         Premium cost only <b>&#8358;1,500</b> monthly. Cancel anytime.
       </p>
     </div>
-    <div class="pt-3" v-else-if="user.username === null">
+    <div
+      class="pt-3"
+      v-else-if="user.username === null && $route.path != '/profile/edit'"
+    >
       <div
         class="mt-20 -mb-16 mx-5 border-green-500 border p-3 rounded-md bg-green-500 bg-opacity-5"
       >
@@ -41,7 +44,7 @@
 </template>
 
 <script>
-import { updateProfile, fetchProfile } from "@/services/profile";
+import { updateProfile } from "@/services/profile";
 import { UID } from "@/utils/constants";
 
 export default {
@@ -75,15 +78,6 @@ export default {
         this.trialModal = true;
       }
     },
-    async fetchUserProfile() {
-      await fetchProfile(localStorage.getItem(UID))
-        .then(async (response) => {
-          this.$store.commit("SET_USER", response[0]);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     async startTrial() {
       this.submitting = true;
       const payload = {
@@ -91,14 +85,14 @@ export default {
         plan: "trial", // trial, freenium, premium,
       };
       await updateProfile(localStorage.getItem(UID), payload)
-        .then(() => {
+        .then((response) => {
           this.trialModal = false;
           this.$message.success(
             `Trial activated, subscription would begin ${this.moment(
               payload.next_sub_date
             ).format("DD-MMMM-YYY")}`
           );
-          this.fetchUserProfile();
+          this.$store.commit("SET_USER", response[0]);
         })
         .catch((error) => {
           this.$message.error(error);

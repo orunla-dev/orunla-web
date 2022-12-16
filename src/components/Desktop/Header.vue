@@ -24,7 +24,7 @@
           </span>
         </a>
       </div>
-      <router-link to="/me">
+      <router-link to="/profile">
         <img src="@/assets/user.jpg" class="w-9 rounded-full shadow-lg" />
       </router-link>
     </div>
