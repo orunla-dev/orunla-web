@@ -22,3 +22,14 @@ export function fetchAuthorBooks(authors_id) {
     resolve(data);
   });
 }
+
+export function fetchAllAuthors(range) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("authors")
+      .select("*, profiles(*)")
+      .range(range.start, range.end);
+    if (error) reject(error);
+    resolve(data);
+  });
+}

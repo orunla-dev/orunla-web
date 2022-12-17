@@ -13,7 +13,7 @@
           <p class="font-semibold line-clamp-1">{{ book.title }}</p>
         </div>
         <div class="flex items-start gap-5 pb-5 border-b">
-          <div class="w-11/12">
+          <div class="w-6/12 md:w-11/12">
             <img :src="book.img" class="w-full rounded-md" />
             <div class="rounded-md shadow-md bg-white mt-5 hidden md:block">
               <div
@@ -82,7 +82,7 @@
               :to="
                 book.authors.fullname
                   ? `/authors/${book.authors.uid}`
-                  : `/user/${book.authors.profiles.full_name}`
+                  : `/user/${book.authors.profiles.username}`
               "
               class="font-bold text-secondary hidden md:block"
               >{{

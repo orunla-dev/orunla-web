@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="h-full flex items-center justify-center" v-if="loading">
+    <div class="h-screen flex items-center justify-center" v-if="loading">
       <loading />
     </div>
     <div
@@ -25,9 +25,14 @@
       <div class="md:flex md:items-start">
         <div class="flex items-center justify-center md:justify-start md:w-2/6">
           <img
+            v-if="author.img"
             :src="author.img"
             class="h-auto w-52 md:w-72 rounded-xl border"
           />
+          <i
+            v-else
+            class="icofont-user-alt-3 text-8xl text-gray-500 border p-5 rounded-xl bg-gray-200"
+          ></i>
         </div>
         <div class="text-center md:text-left mt-3 md:w-4/6">
           <h1 class="text-2xl text-primary font-semibold">
@@ -71,11 +76,15 @@
               About
               {{
                 getFirstWord(author.fullname) ||
-                getFirstWord(author.profiles.full_name)
+                getFirstWord(author.profiles.full_name) ||
+                "Not Available"
               }}
             </h2>
             <p class="text-justify">
-              {{ author.about }}
+              {{
+                author.about ||
+                "This is yet to be filled, Please check back later"
+              }}
             </p>
           </div>
           <div class="border-b pb-5 text-left mt-5">
@@ -83,7 +92,8 @@
               Books By
               {{
                 getFirstWord(author.fullname) ||
-                getFirstWord(author.profiles.full_name)
+                getFirstWord(author.profiles.full_name) ||
+                "Not Available"
               }}
             </h2>
             <div class="flex gap-10 md:gap-3 flex-wrap mt-5">
@@ -167,6 +177,15 @@ export default {
   },
   mounted() {
     this.fetchAuthor();
+  },
+  metaInfo() {
+    return {
+      title: `${
+        this.author.fullname ||
+        this.author.profiles.full_name ||
+        "Not available"
+      }`,
+    };
   },
 };
 </script>
