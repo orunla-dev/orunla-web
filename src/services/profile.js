@@ -45,3 +45,14 @@ export function checkUsername(username) {
     resolve(data);
   });
 }
+
+export function loadUserReadHistory(uid) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("now_reading")
+      .select(`*, books(*, authors(*, profiles(*)))`)
+      .match({ profiles_id: uid, completed: true });
+    if (error) reject(error);
+    resolve(data);
+  });
+}

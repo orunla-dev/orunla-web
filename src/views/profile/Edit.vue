@@ -1,126 +1,128 @@
 <template>
   <div class="h-full">
-    <div class="flex justify-center">
-      <input
-        type="file"
-        accept="image/*"
-        class="hidden"
-        ref="img"
-        @change="uploadImg"
-      />
-      <div
-        class="p-7 rounded-full bg-gray-100 overflow-hidden"
-        @click="openFile()"
-      >
-        <i class="icofont-user-alt-3 text-8xl text-gray-500"></i>
-      </div>
-    </div>
-    <ValidationObserver v-slot="{ invalid }">
-      <el-form>
-        <ValidationProvider
-          name="Fullname"
-          v-slot="{ errors }"
-          rules="required"
+    <div class="w-1/3 my-0 mx-auto">
+      <div class="flex justify-center">
+        <input
+          type="file"
+          accept="image/*"
+          class="hidden"
+          ref="img"
+          @change="uploadImg"
+        />
+        <div
+          class="p-7 rounded-md bg-gray-200 overflow-hidden cursor-pointer"
+          @click="openFile()"
         >
-          <el-form-item label="Full Name">
-            <el-input
-              v-model="user.full_name"
-              placeholder="John Doe"
-              class="flex items-center rounded-md"
-              :class="errors[0] ? 'border border-red-300' : ''"
-            >
-              <i
-                slot="prefix"
-                class="icofont-user-alt-3 el-input__icon mr-1 text-lg"
-              ></i>
-            </el-input>
-          </el-form-item>
-        </ValidationProvider>
-        <template v-if="userData.username === null">
+          <i class="icofont-user-alt-3 text-8xl text-primary"></i>
+        </div>
+      </div>
+      <ValidationObserver v-slot="{ invalid }">
+        <el-form>
           <ValidationProvider
-            name="username"
+            name="Fullname"
             v-slot="{ errors }"
             rules="required"
           >
-            <el-form-item label="Username">
+            <el-form-item label="Full Name">
               <el-input
-                :disabled="userData.username !== null"
-                v-model="user.username"
-                placeholder="Some Unique username"
+                v-model="user.full_name"
+                placeholder="John Doe"
                 class="flex items-center rounded-md"
                 :class="errors[0] ? 'border border-red-300' : ''"
-                @change="verifyUserName"
               >
                 <i
                   slot="prefix"
-                  class="icofont-at el-input__icon mr-1 text-lg"
-                  :class="`text-${icon}`"
+                  class="icofont-user-alt-3 el-input__icon mr-1 text-lg"
                 ></i>
               </el-input>
             </el-form-item>
           </ValidationProvider>
-        </template>
-        <ValidationProvider
-          name="location"
-          v-slot="{ errors }"
-          rules="required"
-        >
-          <el-form-item label="Location">
-            <el-input
-              v-model="user.location"
-              placeholder="Some Unique username"
-              class="flex items-center rounded-md"
-              :class="errors[0] ? 'border border-red-300' : ''"
+          <template v-if="userData.username === null">
+            <ValidationProvider
+              name="username"
+              v-slot="{ errors }"
+              rules="required"
             >
-              <i
-                slot="prefix"
-                class="icofont-location-pin el-input__icon mr-1 text-lg"
-              ></i>
-            </el-input>
-          </el-form-item>
-        </ValidationProvider>
-        <ValidationProvider name="zone" v-slot="{ errors }" rules="required">
-          <el-form-item label="Zone">
-            <el-autocomplete
-              v-model="zone"
-              class="w-full"
-              :fetch-suggestions="querySearch"
-              placeholder="Input your state"
-              @select="handleSelect"
-              :class="errors[0] ? 'border border-red-300' : ''"
-            >
-              <i
-                slot="prefix"
-                class="icofont-location-arrow el-input__icon mr-1 text-lg"
-              ></i>
-              <template slot-scope="{ item }">
-                <div class="value">
-                  {{ item.zone }} - {{ item.state }}, {{ item.country_code }}
-                </div>
-              </template>
-            </el-autocomplete>
-          </el-form-item>
-        </ValidationProvider>
-        <div class="mt-10" />
-        <el-button
-          class="w-full"
-          type="primary"
-          :disabled="invalid"
-          @click="saveProfile"
-          :loading="submitting"
-        >
-          Save Profile
-        </el-button>
-        <div class="mt-5" />
-        <router-link
-          to="/profile"
-          class="block text-center p-2"
-          v-if="userData.username !== null"
-        >
-          Cancel
-        </router-link>
-      </el-form>
-    </ValidationObserver>
+              <el-form-item label="Username">
+                <el-input
+                  :disabled="userData.username !== null"
+                  v-model="user.username"
+                  placeholder="Some Unique username"
+                  class="flex items-center rounded-md"
+                  :class="errors[0] ? 'border border-red-300' : ''"
+                  @change="verifyUserName"
+                >
+                  <i
+                    slot="prefix"
+                    class="icofont-at el-input__icon mr-1 text-lg"
+                    :class="`text-${icon}`"
+                  ></i>
+                </el-input>
+              </el-form-item>
+            </ValidationProvider>
+          </template>
+          <ValidationProvider
+            name="location"
+            v-slot="{ errors }"
+            rules="required"
+          >
+            <el-form-item label="Location">
+              <el-input
+                v-model="user.location"
+                placeholder="Some Unique username"
+                class="flex items-center rounded-md"
+                :class="errors[0] ? 'border border-red-300' : ''"
+              >
+                <i
+                  slot="prefix"
+                  class="icofont-location-pin el-input__icon mr-1 text-lg"
+                ></i>
+              </el-input>
+            </el-form-item>
+          </ValidationProvider>
+          <ValidationProvider name="zone" v-slot="{ errors }" rules="required">
+            <el-form-item label="Zone">
+              <el-autocomplete
+                v-model="zone"
+                class="w-full"
+                :fetch-suggestions="querySearch"
+                placeholder="Input your state"
+                @select="handleSelect"
+                :class="errors[0] ? 'border border-red-300' : ''"
+              >
+                <i
+                  slot="prefix"
+                  class="icofont-location-arrow el-input__icon mr-1 text-lg"
+                ></i>
+                <template slot-scope="{ item }">
+                  <div class="value">
+                    {{ item.zone }} - {{ item.state }}, {{ item.country_code }}
+                  </div>
+                </template>
+              </el-autocomplete>
+            </el-form-item>
+          </ValidationProvider>
+          <div class="mt-10" />
+          <el-button
+            class="w-full"
+            type="primary"
+            :disabled="invalid"
+            @click="saveProfile"
+            :loading="submitting"
+          >
+            Save Profile
+          </el-button>
+          <div class="mt-5" />
+          <router-link
+            to="/profile"
+            class="block text-center p-2"
+            v-if="userData.username !== null"
+          >
+            Cancel
+          </router-link>
+        </el-form>
+      </ValidationObserver>
+    </div>
   </div>
 </template>
 

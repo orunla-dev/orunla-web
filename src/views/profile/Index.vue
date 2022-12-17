@@ -1,12 +1,98 @@
 <template>
-  <div class="h-screen">Hello Profile</div>
+  <div class="h-full md:overflow-hidden">
+    <div class="flex flex-col justify-center items-center mt-5">
+      <div class="p-7 rounded-md bg-gray-200 overflow-hidden">
+        <i class="icofont-user-alt-3 text-8xl text-primary"></i>
+      </div>
+      <div class="mt-5 flex gap-3 items-end">
+        <p class="text-3xl">{{ user.full_name }}</p>
+        <router-link
+          to="/profile/edit"
+          class="border rounded-md py-1 px-2 bg-gray-200"
+        >
+          <i class="icofont-edit text-md text-gray-500"></i>
+        </router-link>
+      </div>
+      <p class="italic text-gray-800">@{{ user.username }}</p>
+    </div>
+    <div class="mt-5 pb-5 border-b">
+      <h2 class="text-xl mb-2">Your reading history</h2>
+      <div
+        class="flex flex-col justify-center items-center"
+        v-if="history.length === 0"
+      >
+        <img src="@/assets/svgs/Sad-Face.svg" class="w-1/2" />
+        <h2 class="text-2xl font-bold">Oh No!</h2>
+        <p class="text-center mt-2 w-3/4">
+          You haven't completed any book yet. Completing books unlocks beautiful
+          badges and make your brain healthy.
+        </p>
+      </div>
+      <div class="flex overflow-x-auto gap-5 mt-5" v-else>
+        <div
+          class="w-5/6 h-32 md:w-2/6 p-5 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
+          v-for="book in history"
+          :key="book.id"
+        >
+          <img
+            :src="book.books.img"
+            class="h-full w-auto rounded-md"
+            :alt="book.books.title"
+          />
+          <div class="">
+            <h3 class="font-bold text-lg text-primary line-clamp-1">
+              {{ book.books.title }}
+            </h3>
+            <p class="text-sm my-2 line-clamp-2">{{ book.books.sub_title }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-red-50 p-2 border border-red-200 rounded-md flex justify-between items-center mt-3"
+      v-if="!user.isEmailVerified"
+    >
+      {{ user.email }} isn't verified
+      <div class="text-sm bg-red-500 text-white px-3 py-2 rounded-md">
+        Send confirmation
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { loadUserReadHistory } from "@/services/profile";
+import { UID } from "@/utils/constants";
+
 export default {
   name: "ProfilePage",
+  data() {
+    return {
+      history: [],
+    };
+  },
+  methods: {
+    async getUserHistory() {
+      await loadUserReadHistory(localStorage.getItem(UID))
+        .then((response) => {
+          this.history = response;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$message.error("Error loading your read history");
+        });
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
   mounted() {
-    console.log("Hello");
+    this.getUserHistory();
+  },
+  metaInfo: {
+    title: "My profile",
   },
 };
 </script>

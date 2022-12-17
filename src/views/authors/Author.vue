@@ -102,7 +102,7 @@
                   `/books/${book.isbn}/` +
                   book.title.toLowerCase().replace(/ /g, '-')
                 "
-                class="w-32 md:w-32 border rounded-md text-center p-3 hover:bg-gray-100"
+                class="w-32 md:w-52 border rounded-md text-center p-3 hover:bg-gray-100"
                 :title="
                   book.title + ' by ' + book.authors.fullname ||
                   book.authors.profiles.full_name

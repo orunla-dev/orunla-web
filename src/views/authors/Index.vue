@@ -81,7 +81,6 @@ export default {
           this.loading = false;
           this.infiniteScroll.start += this.infiniteScroll.end;
           this.infiniteScroll.end += 50;
-          console.log(response);
         })
         .catch((error) => {
           if (this.infiniteScroll.start === 0) {
