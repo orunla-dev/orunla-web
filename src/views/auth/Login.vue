@@ -147,7 +147,6 @@ export default {
         if (error) throw Error(error);
         if (data.user) {
           localStorage.setItem(UID, data.session.user.id);
-          this.$message.success("Welcome back, champ!");
           await fetchProfile(data.session.user.id)
             .then(async (response) => {
               this.$store.commit("SET_USER", response[0]);
@@ -158,7 +157,12 @@ export default {
                   (response) => {
                     this.$store.commit("SET_NOTIFICATION", response);
                     setTimeout(() => {
-                      this.$router.replace("/");
+                      if (this.$route.query.continue) {
+                        this.$router.replace(this.$route.query.continue);
+                      } else {
+                        this.$router.replace("/");
+                      }
+                      this.$message.success("Welcome back, champ!");
                       this.submitting = false;
                     }, 1000);
                   }

@@ -247,7 +247,9 @@ export default {
       this.submitting = false;
     },
     openFile() {
-      this.$message.info("You catch us here, we're working to make photo upload available. Give us sometime.")
+      this.$message.info(
+        "You catch us here, we're working to make photo upload available. Give us sometime."
+      );
       // this.$refs.img.click();
     },
   },

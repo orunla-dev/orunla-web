@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen">
+    {{ user }}
     <div class="flex items-center justify-center h-full" v-if="loading">
       <loading />
     </div>
@@ -278,9 +279,16 @@
               desirable location for drop off.
             </p>
           </div>
-          <div class="px-5">
+          <div class="px-5" v-if="user.uid">
             <el-button type="primary" class="w-full">Get paperback</el-button>
           </div>
+          <router-link
+            v-else
+            :to="`/auth/login?continue=${$route.fullPath}`"
+            class="bg-primary text-white rounded-md block mx-5 py-3 text-center"
+          >
+            Log in to continue
+          </router-link>
         </div>
       </div>
     </div>
@@ -321,6 +329,9 @@ export default {
     lists() {
       return this.$store.state.user_list;
     },
+    user() {
+      return this.$store.state.user;
+    },
   },
   methods: {
     async fetchTitle() {
@@ -352,6 +363,10 @@ export default {
         });
     },
     async addToList() {
+      if (!localStorage.getItem(UID)) {
+        this.$message.warning("Please log in to continue");
+        return;
+      }
       const payload = {
         profiles_id: localStorage.getItem(UID),
         books_id: this.book.isbn,

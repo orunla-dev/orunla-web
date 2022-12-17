@@ -52,26 +52,46 @@
       href="#logout"
       @click.prevent="logUserOut()"
       class="absolute bottom-10 py-3 pl-8 pr-10 font-semibold rounded-full bg-red-300 bg-opacity-30 text-red-700 justify-self-end flex gap-3 items-center"
+      v-if="user.uid"
     >
       <i class="icofont-logout"></i>
       Log Out
     </a>
+    <router-link
+      v-else
+      :to="`/auth/login?continue=${$route.path}`"
+      class="absolute bottom-10 py-3 pl-8 pr-10 font-semibold rounded-full bg-primary text-white justify-self-end flex gap-3 items-center"
+    >
+      <i class="icofont-sign-in"></i>
+      Log In
+    </router-link>
   </div>
 </template>
 
 <script>
 import { supabase } from "@/config/supabase";
+import { UID } from "@/utils/constants";
 
 export default {
   name: "DesktopSideNav",
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
   methods: {
     async logUserOut() {
       const { error } = await supabase.auth.signOut();
       if (error) {
         this.$message.error(error);
       } else {
+        // delete localStorage and return vuex to default
+        localStorage.removeItem(UID);
+        this.$store.commit("SET_USER", {});
+        this.$store.commit("SET_USER_LIST", []);
+        this.$store.commit("SET_NOTIFICATION", []);
         this.$message.info("You've been logged out.");
-        this.$router.push("/auth");
+        this.$router.go();
       }
     },
   },
