@@ -1,8 +1,8 @@
 <template>
-  <div class="flex gap-1">
+  <div class="flex gap-1" :title="`Rated ${stars} stars`">
     <i class="icofont-star text-primary" v-for="i in stars" :key="i"></i>
     <i
-      class="icofont-ui-rate-blank text-primary transform scale-90"
+      class="icofont-star text-primary opacity-40"
       v-for="i in 5 - stars"
       :key="`open-${i}`"
     ></i>

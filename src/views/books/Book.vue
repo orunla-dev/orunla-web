@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen">
-    {{ user }}
-    <div class="flex items-center justify-center h-full" v-if="loading">
+    <div class="flex items-center justify-center h-screen" v-if="loading">
       <loading />
     </div>
     <div class="md:flex md:gap-10" v-else>
@@ -193,6 +192,15 @@
             </div>
           </div>
         </div>
+        <!--- If user has not completed the book, can't review -->
+        <div
+          class="my-5 pb-5 border-b"
+          v-if="userHasNotReviewed && userCanReview"
+        >
+          <h2 class="font-bold text-xl">Review this book</h2>
+          <p class="text-sm mb-3">Tell others what you think about this book</p>
+          <star-rater @rated="openRatingModal" />
+        </div>
         <div class="md:flex gap-3 md:mt-5 flex-wrap pb-5 border-b">
           <p class="">
             <abbr title="International Standard Book Number" class="font-bold"
@@ -206,15 +214,26 @@
         </div>
         <div class="my-5 border-b pb-10">
           <h2 class="font-bold text-xl">Readers review</h2>
-          <div class="flex gap-3 mt-3 overflow-x-auto">
+          <div class="mt-5" v-if="reviews.length === 0">
+            <p class="text-sm">
+              Reviews are from people who have completed a particular book
+            </p>
+            <p class="text-md mt-1">No reviews yet</p>
+          </div>
+          <div class="flex gap-3 mt-3 overflow-x-auto" v-else>
             <div
-              class="border p-5 rounded-lg w-3/6"
+              class="p-5 bg-gray-50 border rounded-lg w-4/6"
               v-for="review in reviews"
               :key="review.id"
             >
-              <star-rating :grade="review.rating" />
-              <p class="text-md mt-3 mb-2">{{ review.message }}</p>
-              <p class="text-xs">{{ review.profiles.full_name }}</p>
+              <p>{{ review.profiles.full_name }}</p>
+              <div class="flex gap-3 my-3">
+                <star-rating :grade="review.rating" />
+                <p class="text-xs">
+                  {{ moment(review.created_at).format("DD/MM/YYYY") }}
+                </p>
+              </div>
+              <p class="text-md text-gray-600">{{ review.message }}</p>
             </div>
           </div>
         </div>
@@ -291,6 +310,54 @@
           </router-link>
         </div>
       </div>
+      <div
+        class="fixed bottom-0 right-0 left-0 top-0 bg-black bg-opacity-10 md:bg-opacity-50 md:top-0 md:flex md:items-center md:justify-center"
+        style="z-index: 99"
+        v-if="ratingModal"
+      >
+        <div
+          class="h-full md:h-auto md:w-1/3 md:rounded-xl bg-white pt-5 md:relative md:py-5"
+        >
+          <i
+            class="icofont-close-circled font-bold text-3xl cursor-pointer absolute right-5 text-red-500"
+            @click="ratingModal = false"
+          ></i>
+          <div class="p-5">
+            <h1 class="text-3xl font-bold">{{ book.title }}</h1>
+            <p class="">Rate this book</p>
+          </div>
+          <div class="px-5">
+            <ValidationObserver v-slot="{ invalid }">
+              <el-form>
+                <ValidationProvider
+                  name="Review"
+                  v-slot="{ errors }"
+                  rules="required"
+                >
+                  <el-input
+                    type="textarea"
+                    v-model="ratingMessage"
+                    placeholder="Describe how you feel about this book"
+                    class="rounded-md"
+                    :autosize="{ minRows: 7, maxRows: 14 }"
+                    :class="errors[0] ? 'border border-red-300' : ''"
+                  />
+                </ValidationProvider>
+                <p class="mt-1 mb-10 text-sm">Reviews are displayed publicly</p>
+                <el-button
+                  :disabled="invalid"
+                  :loading="submitting"
+                  type="primary"
+                  class="w-full"
+                  @click="addToReview()"
+                >
+                  Post review
+                </el-button>
+              </el-form>
+            </ValidationObserver>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -303,8 +370,11 @@ import {
   removeFromList as removeList,
   fetchList,
   fetchBookReview,
+  addReview,
   fetchRelatedBooks,
 } from "@/services/books";
+
+import { loadFromUserHistory } from "@/services/profile";
 
 import { UID } from "@/utils/constants";
 
@@ -312,6 +382,7 @@ export default {
   name: "BookPage",
   components: {
     StarRating: () => import("@/components/Base/StarRating.vue"),
+    StarRater: () => import("@/components/Base/StarRate.vue"),
     Loading: () => import("@/components/Base/Loading.vue"),
   },
   data() {
@@ -323,6 +394,11 @@ export default {
       related: [],
       menu: false,
       listed: false,
+      myRating: 0,
+      ratingModal: false,
+      ratingMessage: "",
+      submitting: false,
+      userCanReview: false,
     };
   },
   computed: {
@@ -331,6 +407,19 @@ export default {
     },
     user() {
       return this.$store.state.user;
+    },
+    userHasNotReviewed() {
+      if (localStorage.getItem(UID) === null) return false;
+      if (this.reviews.length === 0) return true;
+      if (
+        this.reviews.filter(
+          (review) => review.profile_id === localStorage.getItem(UID)
+        )
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   methods: {
@@ -419,9 +508,11 @@ export default {
     },
     shareBook() {
       const data = {
-        title: "Read more books on Orunla",
-        text: "We are building the biggest library of African literature. Come see",
-        url: `https://twitter.com/orunla-africa`,
+        title: `${this.book.title} - ${
+          this.book.authors.fullname || this.book.authors.profiles.full_name
+        }`,
+        text: this.book.description,
+        url: window.location.href,
       };
       try {
         navigator.share(data);
@@ -435,12 +526,61 @@ export default {
     handleClick() {
       this.$router.push(`/books/${this.$route.params.isbn}`);
     },
+    openRatingModal(star) {
+      this.myRating = star;
+      this.ratingModal = true;
+    },
+    async addToReview() {
+      this.submitting = true;
+      if (!localStorage.getItem(UID)) {
+        this.$message.warning("Please log in to continue");
+        return;
+      }
+
+      const payload = {
+        profile_id: localStorage.getItem(UID),
+        book_id: this.book.isbn,
+        isbn: this.book.isbn,
+        message: this.ratingMessage,
+        rating: this.myRating,
+      };
+
+      await addReview(payload)
+        .then((response) => {
+          this.reviews = [...this.reviews, ...response];
+          this.ratingModal = false;
+          this.$message.success("Review posted, thank you.");
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+
+      this.submitting = false;
+    },
+    async fetchUserRead() {
+      if (!localStorage.getItem(UID)) {
+        return;
+      }
+      await loadFromUserHistory(
+        localStorage.getItem(UID),
+        this.$route.params.isbn
+      )
+        .then((response) => {
+          if (response[0].completed) {
+            this.userCanReview = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   watch: {
     $route() {
       if (!this.$route.query.action) {
         this.loading = true;
         this.fetchTitle();
+        this.fetchUserRead();
       }
     },
   },
@@ -451,6 +591,12 @@ export default {
         this.listed = true;
       }
     });
+    this.fetchUserRead();
+  },
+  metaInfo() {
+    return {
+      title: this.book.title,
+    };
   },
 };
 </script>

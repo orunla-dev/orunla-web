@@ -5,7 +5,7 @@
         <i class="icofont-user-alt-3 text-8xl text-primary"></i>
       </div>
       <div class="mt-5 flex gap-3 items-end">
-        <p class="text-3xl">{{ user.full_name }}</p>
+        <p class="text-3xl">{{ user.full_name || "null" }}</p>
         <router-link
           to="/profile/edit"
           class="border rounded-md py-1 px-2 bg-gray-200"
@@ -13,24 +13,27 @@
           <i class="icofont-edit text-md text-gray-500"></i>
         </router-link>
       </div>
-      <p class="italic text-gray-800">@{{ user.username }}</p>
+      <p class="italic text-gray-800">@{{ user.username || "null" }}</p>
     </div>
-    <div class="mt-5 pb-5 border-b">
+    <div class="mt-10 pb-5 border-b">
       <h2 class="text-xl mb-2">Your reading history</h2>
       <div
         class="flex flex-col justify-center items-center"
         v-if="history.length === 0"
       >
-        <img src="@/assets/svgs/Sad-Face.svg" class="w-1/2" />
+        <img src="@/assets/svgs/Sad-Face.svg" class="w-2/3 md:w-1/4" />
         <h2 class="text-2xl font-bold">Oh No!</h2>
-        <p class="text-center mt-2 w-3/4">
-          You haven't completed any book yet. Completing books unlocks beautiful
-          badges and make your brain healthy.
+        <p class="text-center mt-2 mb-5 w-full md:w-2/4">
+          You haven't completed any book yet. Completing books unlocks badges
+          and gives an healthy brain.
         </p>
       </div>
-      <div class="flex overflow-x-auto gap-5 mt-5" v-else>
+      <div
+        class="flex md:justify-between mb-5 h-96 py-5 md:py-0 overflow-scroll md:h-auto md:overflow-hidden flex-wrap gap-5 md:gap-10 mt-5"
+        v-else
+      >
         <div
-          class="w-5/6 h-32 md:w-2/6 p-5 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
+          class="w-full h-32 md:w-72 p-5 flex-shrink-0 md:flex-shrink bg-white border rounded-md flex items-start gap-3"
           v-for="book in history"
           :key="book.id"
         >

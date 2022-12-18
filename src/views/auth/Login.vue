@@ -127,6 +127,11 @@ export default {
       submitting: false,
     };
   },
+  mounted() {
+    if (this.$route.query.continue) {
+      this.$message.info("Please Login to continue");
+    }
+  },
   metaInfo: {
     meta: [
       {

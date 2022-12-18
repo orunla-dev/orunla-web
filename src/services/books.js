@@ -35,12 +35,25 @@ export function fetchRelatedBooks(category) {
   });
 }
 
+// Reviews
+
 export function fetchBookReview(isbn) {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase
       .from("reviews")
       .select(`*, profiles(*)`)
       .eq("isbn", isbn);
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function addReview(payload) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("reviews")
+      .insert({ ...payload })
+      .select(`*, profiles(*)`);
     if (error) reject(error);
     resolve(data);
   });

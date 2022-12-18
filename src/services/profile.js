@@ -56,3 +56,14 @@ export function loadUserReadHistory(uid) {
     resolve(data);
   });
 }
+
+export function loadFromUserHistory(uid, isbn) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("now_reading")
+      .select(`*, books(*, authors(*, profiles(*)))`)
+      .match({ profiles_id: uid, books_id: isbn });
+    if (error) reject(error);
+    resolve(data);
+  });
+}

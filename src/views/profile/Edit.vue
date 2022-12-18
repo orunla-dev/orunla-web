@@ -1,6 +1,6 @@
 <template>
   <div class="h-full">
-    <div class="w-1/3 my-0 mx-auto">
+    <div class="md:w-1/3 my-0 mx-auto">
       <div class="flex justify-center">
         <input
           type="file"

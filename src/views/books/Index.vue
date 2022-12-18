@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center" v-if="loading">
+    <div class="h-screen flex items-center justify-center" v-if="loading">
       <loading />
     </div>
     <mobile-book-preview

@@ -128,7 +128,7 @@
 
 <script>
 import { supabase } from "@/config/supabase";
-// import { UID } from "@/utils/constants";
+import { UID } from "@/utils/constants";
 
 export default {
   name: "SideNav",
@@ -158,8 +158,13 @@ export default {
       if (error) {
         this.$message.error(error);
       } else {
+        // delete localStorage and return vuex to default
+        localStorage.removeItem(UID);
+        this.$store.commit("SET_USER", {});
+        this.$store.commit("SET_USER_LIST", []);
+        this.$store.commit("SET_NOTIFICATION", []);
         this.$message.info("You've been logged out.");
-        this.$router.push("/auth");
+        this.$router.go();
       }
     },
   },

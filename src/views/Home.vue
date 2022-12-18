@@ -51,7 +51,7 @@
         </div>
       </div>
     </div>
-    <div class="flex items-center justify-center" v-if="loading">
+    <div class="flex items-center justify-center h-screen" v-if="loading">
       <loading />
     </div>
     <mobile-book-preview
