@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="my-3 md:my-0 md:mb-10" v-if="reading.length > 0">
-      <h1 class="text-2xl font-bold text-primary">Continue reading</h1>
-      <div class="flex gap-5 overflow-x-auto md:flex-wrap py-5">
+    <div class="mb-5 border-b" v-if="reading.length > 0">
+      <h1 class="font-bold text-primary">Continue reading</h1>
+      <div class="flex gap-5 overflow-x-auto py-5">
         <router-link
           :to="`/read/${book.books.isbn}`"
-          class="w-5/6 h-32 md:w-2/6 p-2 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
+          class="relative w-auto h-40 flex-shrink-0 bg-white border rounded-md flex items-start gap-3 overflow-hidden"
           v-for="(book, index) in reading"
           :key="index"
         >
@@ -14,40 +14,35 @@
             class="h-full w-auto rounded-md"
             :alt="book.books.title"
           />
-          <div class="">
-            <h3 class="font-bold text-lg text-primary line-clamp-1">
-              {{ book.books.title }}
-            </h3>
-            <p class="text-sm my-2 line-clamp-2">{{ book.books.sub_title }}</p>
-            <star-rating :grade="book.books.rating" />
-            {{ book.page }}/{{ book.books.totalPages }}
+          <div class="absolute bottom-0 left-0 right-0">
+            <div class="bg-secondary">
+              <div
+                class="bg-primary p-1"
+                :style="`width: ${readProgress(
+                  book.page,
+                  book.books.totalPages
+                )}`"
+              ></div>
+            </div>
           </div>
         </router-link>
       </div>
     </div>
-    <div v-if="!loading">
-      <h2 class="text-2xl font-bold text-primary">Books you might like</h2>
-      <div class="flex justify-between gap-3 md:gap-10 flex-wrap py-5">
+    <div class="mb-5 border-b" v-if="!loading">
+      <h2 class="font-bold text-primary">Books you might like</h2>
+      <div class="flex justify-between overflow-x-auto gap-3 md:gap-10 py-5">
         <div
-          class="w-36 md:w-52 border rounded-md overflow-hidden flex-shrink-1 p-5 flex flex-col items-center cursor-pointer"
+          class="relative w-36 md:w-40 border rounded-md flex-shrink-0 overflow-hidden flex flex-col items-center cursor-pointer"
           v-for="book in books"
           :key="book.isbn"
           @click="previewBook(book)"
+          :title="`${book.title} - ${
+            book.authors.fullname ||
+            book.authors.profiles.full_name ||
+            'Not available'
+          }`"
         >
-          <img :src="book.img" class="w-5/6 rounded-md" />
-          <div class="mt-3 text-center">
-            <h2 class="text-lg font-bold text-primary line-clamp-2">
-              {{ book.title }}
-            </h2>
-            <h3 class="text-sm md:text-lg my-2">
-              {{
-                book.authors.fullname ||
-                book.authors.profiles.full_name ||
-                "Not available"
-              }}
-            </h3>
-            <star-rating :grade="book.rating" class="justify-center" />
-          </div>
+          <img :src="book.img" class="h-full rounded-md" :alt="book.title" />
         </div>
       </div>
     </div>
@@ -75,7 +70,7 @@ import { UID } from "@/utils/constants";
 export default {
   name: "Home",
   components: {
-    StarRating: () => import("@/components/Base/StarRating.vue"),
+    // StarRating: () => import("@/components/Base/StarRating.vue"),
     Loading: () => import("@/components/Base/Loading.vue"),
     MobileBookPreview: () => import("@/components/Mobile/BookPreview.vue"),
     DesktopBookPreview: () => import("@/components/Desktop/BookPreview.vue"),
@@ -105,6 +100,9 @@ export default {
     },
   },
   methods: {
+    readProgress(page, totalPages) {
+      return (page / totalPages) * 100;
+    },
     previewBook(book) {
       this.bookPreview.data = book;
       this.bookPreview.open = true;
@@ -146,31 +144,11 @@ export default {
           this.$message.error(error);
         });
     },
-    readProgress(pageNumber, totalPages) {
-      return (pageNumber / totalPages) * 100;
-    },
-    scroll() {
-      window.onscroll = () => {
-        let bottomOfWindow =
-          Math.max(
-            window.pageYOffset,
-            document.documentElement.scrollTop,
-            document.body.scrollTop
-          ) +
-            window.innerHeight ===
-          document.documentElement.offsetHeight;
-
-        if (bottomOfWindow) {
-          if (!this.infiniteScroll.rangeError) this.fetchAllBooks();
-        }
-      };
-    },
   },
   mounted() {
     // Initially load some items.
     this.fetchAllBooks();
     this.fetchReadingList();
-    this.scroll();
   },
 };
 </script>
