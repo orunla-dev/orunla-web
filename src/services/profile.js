@@ -67,3 +67,23 @@ export function loadFromUserHistory(uid, isbn) {
     resolve(data);
   });
 }
+
+export function uploadAvatar(filename, file) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .upload(`public/${filename}`, file, { upsert: true });
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function loadAvatar(filename) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(filename, 6000);
+    if (error) reject(error);
+    resolve(data);
+  });
+}

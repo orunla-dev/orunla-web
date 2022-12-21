@@ -104,18 +104,12 @@ const routes = [
           import(/* webpackChunkName: "auth" */ "../views/auth/Login.vue"),
       },
       {
-        path: "send-verification",
-        name: "SendVerificationPage",
+        path: "save-password",
+        name: "SavePassword",
         component: () =>
           import(
             /* webpackChunkName: "auth" */ "../views/auth/SendVerification.vue"
           ),
-      },
-      {
-        path: "verify",
-        name: "VerificationPage",
-        component: () =>
-          import(/* webpackChunkName: "auth" */ "../views/auth/Verify.vue"),
       },
       {
         path: "reset-password",

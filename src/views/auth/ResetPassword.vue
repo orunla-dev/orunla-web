@@ -68,8 +68,7 @@
 </template>
 
 <script>
-// import { sendPasswordResetEmail } from "@firebase/auth";
-// import { auth } from "@/config/firebase";
+import { sendPasswordResetLink } from "@/services/auth";
 
 export default {
   name: "ResetPasswordView",
@@ -91,28 +90,26 @@ export default {
         content: "Log In to Orunla Africa.",
       },
     ],
-    title: "Log In",
+    title: "Reset Password",
   },
   methods: {
-    resetPassword() {
+    async resetPassword() {
       this.submitting = true;
-      // const vm = this;
-
-      //   sendPasswordResetEmail(auth, this.auth.email)
-      //     .then(() => {
-      //       vm.$message.success("Password reset email sent");
-      //       if (this.$route.query.continue) {
-      //         vm.$router.push(
-      //           `/auth/login?continue=${this.$route.query.continue}`
-      //         );
-      //       } else {
-      //         vm.$router.push("/auth/login");
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       this.$message.error(error.message);
-      //     });
-      //   this.submitting = false;
+      await sendPasswordResetLink(this.auth.email)
+        .then(() => {
+          this.$message.success("Password reset email sent");
+          if (this.$route.query.continue) {
+            this.$router.push(
+              `/auth/login?continue=${this.$route.query.continue}`
+            );
+          } else {
+            this.$router.push("/auth/login");
+          }
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+      this.submitting = false;
     },
   },
 };

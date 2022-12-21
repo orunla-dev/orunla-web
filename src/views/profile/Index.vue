@@ -1,8 +1,11 @@
 <template>
   <div class="h-full md:overflow-hidden">
     <div class="flex flex-col justify-center items-center mt-5">
-      <div class="p-7 rounded-md bg-gray-200 overflow-hidden">
+      <div class="p-7 rounded-md bg-gray-200 overflow-hidden" v-if="!img">
         <i class="icofont-user-alt-3 text-8xl text-primary"></i>
+      </div>
+      <div class="bg-gray-200 rounded-xl overflow-hidden" v-else>
+        <img :src="img" class="w-40 h-auto" />
       </div>
       <div class="mt-5 flex gap-3 items-end">
         <p class="text-3xl">{{ user.full_name || "null" }}</p>
@@ -64,7 +67,7 @@
 </template>
 
 <script>
-import { loadUserReadHistory } from "@/services/profile";
+import { loadUserReadHistory, loadAvatar } from "@/services/profile";
 import { UID } from "@/utils/constants";
 
 export default {
@@ -72,6 +75,7 @@ export default {
   data() {
     return {
       history: [],
+      img: "",
     };
   },
   methods: {
@@ -85,6 +89,17 @@ export default {
           this.$message.error("Error loading your read history");
         });
     },
+    async loadUserAvatar(url) {
+      await loadAvatar(url)
+        .then((response) => {
+          this.img = response.signedUrl;
+          return response.signedUrl;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$message.error("Cannot get image now. Please try again");
+        });
+    },
   },
   computed: {
     user() {
@@ -93,6 +108,9 @@ export default {
   },
   mounted() {
     this.getUserHistory();
+    if (this.user.avatar_url) {
+      this.loadUserAvatar(this.user.avatar_url);
+    }
   },
   metaInfo: {
     title: "My profile",

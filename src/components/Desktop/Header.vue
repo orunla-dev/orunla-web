@@ -25,7 +25,13 @@
         </a>
       </div>
       <router-link to="/profile">
-        <img src="@/assets/user.jpg" class="w-9 rounded-full shadow-lg" />
+        <img :src="img" class="w-10 h-10 rounded-full shadow-lg" v-if="img" />
+        <div
+          class="w-10 h-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center"
+          v-else
+        >
+          <i class="icofont-user-alt-3 text-2xl text-primary"></i>
+        </div>
       </router-link>
     </div>
     <div
@@ -75,17 +81,40 @@
 </template>
 
 <script>
+import { loadAvatar } from "@/services/profile";
 export default {
   name: "DesktopHeader",
   data() {
     return {
       notification: false,
+      img: "",
     };
   },
   computed: {
     notifications() {
       return this.$store.state.user_notification;
     },
+    user() {
+      return this.$store.state.user;
+    },
+  },
+  methods: {
+    async loadUserAvatar(url) {
+      await loadAvatar(url)
+        .then((response) => {
+          this.img = response.signedUrl;
+          return response.signedUrl;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$message.error("Cannot get image now. Please try again");
+        });
+    },
+  },
+  mounted() {
+    if (this.user.avatar_url) {
+      this.loadUserAvatar(this.user.avatar_url);
+    }
   },
 };
 </script>
