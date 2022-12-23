@@ -210,7 +210,7 @@
           </p>
           <p class=""><b>PUBLISHED:</b> {{ book.publish_date }}</p>
           <p class=""><b>PUBLISHER:</b> {{ book.publisher }}</p>
-          <p class=""><b>PAGES:</b> {{ book.pages }}</p>
+          <p class=""><b>PAGES:</b> {{ book.totalPages }}</p>
         </div>
         <div class="my-5 border-b pb-10">
           <h2 class="font-bold text-xl">Readers review</h2>

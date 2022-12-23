@@ -1,5 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 import { supabase } from "@/config/supabase";
+import axios from "axios";
 
 export function fetchProfile(uid) {
   return new Promise(async (resolve, reject) => {
@@ -86,4 +87,11 @@ export function loadAvatar(filename) {
     if (error) reject(error);
     resolve(data);
   });
+}
+
+export function uploadToCloudinary(payload) {
+  return axios.post(
+    "https://api.cloudinary.com/v1_1/orunla/image/upload",
+    payload
+  );
 }

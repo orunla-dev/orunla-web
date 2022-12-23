@@ -54,7 +54,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!--- div
       class="bg-red-50 p-2 border border-red-200 rounded-md flex justify-between items-center mt-3"
       v-if="!user.isEmailVerified"
     >
@@ -62,7 +62,7 @@
       <div class="text-sm bg-red-500 text-white px-3 py-2 rounded-md">
         Send confirmation
       </div>
-    </div>
+    </div --->
   </div>
 </template>
 

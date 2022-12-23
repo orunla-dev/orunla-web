@@ -5,6 +5,15 @@
       <i class="icofont-thin-right mt-1 text-xl"></i>
       <p class="font-semibold line-clamp-1">Books</p>
     </div>
+    <router-link
+      to="/admin/books"
+      v-if="user.admin === 1"
+      class="fixed bottom-10 right-10"
+    >
+      <el-button type="primary" size="medium" circle>
+        <i class="icofont-ui-add"></i>
+      </el-button>
+    </router-link>
     <div>
       <h2 class="text-2xl font-bold text-primary">All titles</h2>
       <div
@@ -126,6 +135,11 @@ export default {
           if (!this.infiniteScroll.rangeError) this.fetchAllBooks();
         }
       };
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
     },
   },
   mounted() {

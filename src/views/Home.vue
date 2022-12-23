@@ -42,7 +42,7 @@
             'Not available'
           }`"
         >
-          <img :src="book.img" class="h-full rounded-md" :alt="book.title" />
+          <img :src="book.img" class="w-full rounded-md" :alt="book.title" />
         </div>
       </div>
     </div>

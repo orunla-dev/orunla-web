@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Index from "../views/Index.vue";
+import store from "../store";
 
 import { UID } from "../utils/constants";
 import { supabase } from "../config/supabase";
@@ -20,6 +21,15 @@ async function guard(to, from, next) {
     } else {
       next(`/auth/login?continue=${to.fullPath}`);
     }
+  }
+}
+
+async function adminGuard(to, from, next) {
+  const user = store.state.user;
+  if (user.admin) {
+    next();
+  } else {
+    next(from);
   }
 }
 
@@ -127,6 +137,18 @@ const routes = [
     name: "GetStartedPage",
     component: () => import("../views/GetStarted.vue"),
     beforeEnter: guard,
+  },
+  {
+    path: "/admin",
+    component: Index,
+    children: [
+      {
+        path: "/admin/books",
+        name: "AdminBooksPage",
+        component: () => import("../views/Admin/Books.vue"),
+        beforeEnter: adminGuard,
+      },
+    ],
   },
   {
     path: "/about",
