@@ -8,25 +8,21 @@
     <router-link
       to="/admin/books"
       v-if="user.admin === 1"
-      class="fixed bottom-10 right-10"
+      class="fixed bottom-20 right-5 md:bottom-10 md:right-10 bg-primary text-white p-4 rounded-full shadow-xl"
     >
-      <el-button type="primary" size="medium" circle>
-        <i class="icofont-ui-add"></i>
-      </el-button>
+      <i class="icofont-ssl-security text-3xl"></i>
     </router-link>
     <div>
       <h2 class="text-2xl font-bold text-primary">All titles</h2>
-      <div
-        class="flex justify-center md:justify-start gap-5 md:gap-10 flex-wrap py-5"
-      >
+      <div class="flex justify-start gap-5 md:gap-10 flex-wrap py-5">
         <div
-          class="w-36 md:w-52 border rounded-md overflow-hidden flex-shrink-1 p-5 flex flex-col items-center cursor-pointer"
+          class="w-36 md:w-52 rounded-md border overflow-hidden flex-shrink-1 p-5 flex flex-col cursor-pointer"
           v-for="book in books"
           :key="book.isbn"
           @click="previewBook(book)"
         >
-          <img :src="book.img" class="w-5/6 rounded-md" />
-          <div class="mt-3 text-center">
+          <img :src="book.img" class="w-full rounded-md" />
+          <div class="mt-3 text-left">
             <h2 class="text-lg font-bold text-primary line-clamp-2">
               {{ book.title }}
             </h2>
@@ -37,13 +33,36 @@
                 "Not available"
               }}
             </h3>
-            <star-rating :grade="book.rating" class="justify-center" />
+            <star-rating :grade="book.rating" class="justify-left" />
           </div>
         </div>
       </div>
     </div>
-    <div class="h-screen flex items-center justify-center" v-if="loading">
-      <loading />
+    <div
+      class="h-screen flex justify-start gap-5 md:gap-10 flex-wrap overflow-hidden"
+      v-if="loading"
+    >
+      <el-skeleton
+        class="w-36 md:w-52 border rounded-md p-3"
+        animated
+        v-for="i in 5"
+        :key="i"
+      >
+        <template slot="template">
+          <el-skeleton-item
+            variant="image"
+            style="width: 100%; height: 210px; border-radius: 0.3rem"
+          />
+          <div class="py-3">
+            <el-skeleton-item variant="h1" />
+            <el-skeleton-item
+              variant="text"
+              style="width: 80%; margin-bottom: 0.4rem"
+            />
+            <el-skeleton-item variant="text" style="width: 50%" />
+          </div>
+        </template>
+      </el-skeleton>
     </div>
     <mobile-book-preview
       v-if="breakpoints.smAndDown && bookPreview.open"
@@ -67,7 +86,6 @@ export default {
   name: "",
   components: {
     StarRating: () => import("@/components/Base/StarRating.vue"),
-    Loading: () => import("@/components/Base/Loading.vue"),
     MobileBookPreview: () => import("@/components/Mobile/BookPreview.vue"),
     DesktopBookPreview: () => import("@/components/Desktop/BookPreview.vue"),
   },

@@ -12,6 +12,7 @@
       <div
         @click="routeToAdmins()"
         class="bg-red-100 p-3 rounded-md cursor-pointer mt-5"
+        v-if="action === 'add'"
       >
         If you can't find an author, please create a new one by clicking here.
       </div>
@@ -29,6 +30,7 @@
                   placeholder="International Standard Book Number"
                   type="number"
                   v-model="book.isbn"
+                  :disabled="action === 'edit'"
                 >
                   <i
                     slot="prefix"
@@ -49,8 +51,14 @@
                   v-if="book.authors_id"
                 >
                   <i class="icofont-user-alt-3 text-xl text-gray-400"></i>
-                  <span class="text-md">{{ author.fullname }}</span>
+                  <span class="text-md" v-if="action === 'add'">
+                    {{ author.fullname }}
+                  </span>
+                  <span class="text-md" v-else>
+                    {{ book.authors.fullname }}
+                  </span>
                   <i
+                    v-if="action === 'add'"
                     class="icofont-close-line-circled text-xl cursor-pointer hover:text-red-500 absolute right-3"
                     @click="
                       book.authors_id = '';
@@ -134,8 +142,7 @@
                   type="textarea"
                   v-model="book.description"
                   :autosize="{ minRows: 7, maxRows: 7 }"
-                >
-                </el-input>
+                />
                 <p class="text-red-300 text-sm mt-2">{{ errors[0] }}</p>
               </el-form-item>
             </ValidationProvider>
@@ -168,7 +175,12 @@
               <div class="md:w-1/2">
                 <el-form-item label="Rating">
                   <br />
-                  <star-rater @rated="rate" class="text-xl" />
+                  <star-rater
+                    @rated="rate"
+                    class="text-xl"
+                    v-if="action === 'add'"
+                  />
+                  <star-rating :grade="book.rating" class="text-xl" v-else />
                 </el-form-item>
               </div>
             </div>
@@ -195,7 +207,6 @@
               </el-form-item>
             </div>
           </div>
-
           <div class="md:flex gap-5">
             <ValidationProvider
               name="Publisher"
@@ -226,7 +237,7 @@
               <el-form-item label="Publication date">
                 <el-date-picker
                   placeholder="Publication date"
-                  class="w-full"
+                  class="block w-full"
                   type="date"
                   v-model="book.publish_date"
                 >
@@ -235,7 +246,6 @@
               </el-form-item>
             </ValidationProvider>
           </div>
-
           <div class="md:flex gap-5">
             <ValidationProvider
               name="Book Categories"
@@ -296,10 +306,10 @@
             native-type="submit"
             class="w-full"
             :loading="submitting"
-            :disabled="invalid"
-            @click="addBook()"
+            :disabled="action === 'add' ? invalid : false"
+            @click="action === 'add' ? addBook() : editBook()"
           >
-            Add New Book
+            {{ action === "add" ? "Add New Book" : `Save ${book.title}` }}
           </el-button>
         </el-form>
       </ValidationObserver>
@@ -310,7 +320,7 @@
 <script>
 import { fetchAllAuthors } from "@/services/authors.js";
 import { uploadToCloudinary } from "@/services/profile.js";
-import { addABook } from "@/services/admin.js";
+import { addABook, saveABook } from "@/services/admin.js";
 
 import imageCompression from "browser-image-compression";
 
@@ -318,6 +328,7 @@ export default {
   name: "AddNewBookModal",
   components: {
     StarRater: () => import("@/components/Base/StarRate.vue"),
+    StarRating: () => import("@/components/Base/StarRating.vue"),
   },
   props: {
     action: {
@@ -342,6 +353,8 @@ export default {
           categories: [],
           ebook: "",
           totalPages: 0,
+          publisher: "",
+          publish_date: "",
         };
       },
     },
@@ -429,7 +442,24 @@ export default {
           this.$message.success("Book added");
         })
         .catch((error) => {
-          console.log(error);
+          this.$message.error(error);
+        });
+      this.submitting = false;
+    },
+    async editBook() {
+      this.submitting = true;
+      if (this.book.categories instanceof Array) {
+        console.log("Hello");
+      } else {
+        this.book.categories = this.book.categories.split(",");
+      }
+      delete this.book.authors;
+      await saveABook(this.book)
+        .then(() => {
+          this.$emit("created");
+          this.$message.success(`${this.book.title} updated`);
+        })
+        .catch((error) => {
           this.$message.error(error);
         });
       this.submitting = false;
@@ -447,3 +477,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+>>> .el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 100%;
+}
+</style>

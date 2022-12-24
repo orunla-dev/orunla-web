@@ -30,9 +30,9 @@
     </div>
     <div class="mb-5 border-b" v-if="!loading">
       <h2 class="font-bold text-primary">Books you might like</h2>
-      <div class="flex justify-between overflow-x-auto gap-3 md:gap-10 py-5">
+      <div class="flex justify-start overflow-x-auto gap-3 md:gap-10 py-5">
         <div
-          class="relative w-36 md:w-40 border rounded-md flex-shrink-0 overflow-hidden flex flex-col items-center cursor-pointer"
+          class="relative w-36 md:w-40 rounded-md flex-shrink-0 overflow-hidden flex flex-col items-center cursor-pointer"
           v-for="book in books"
           :key="book.isbn"
           @click="previewBook(book)"

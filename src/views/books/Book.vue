@@ -13,7 +13,7 @@
           <p class="font-semibold line-clamp-1">{{ book.title }}</p>
         </div>
         <div class="flex items-start gap-5 pb-5 border-b">
-          <div class="w-6/12 md:w-11/12">
+          <div class="w-6/12 md:w-3/12">
             <img :src="book.img" class="w-full rounded-md" />
             <div class="rounded-md shadow-md bg-white mt-5 hidden md:block">
               <div
@@ -40,7 +40,7 @@
               </div>
             </div>
           </div>
-          <div class="">
+          <div class="w-6/12 md:w-9/12">
             <div class="flex items-start gap-2 relative">
               <h1 class="text-3xl font-bold">{{ book.title }}</h1>
               <div
@@ -240,13 +240,15 @@
       </div>
       <div class="md:w-1/3 mt-5 md:mt-0 md:bg-gray-50 md:p-5 rounded-lg">
         <h2 class="text-xl font-bold">Related titles</h2>
-        <div class="flex gap-10 md:gap-3 flex-wrap mt-5">
+        <div
+          class="flex justify-start item-start gap-10 md:gap-3 flex-wrap mt-5"
+        >
           <router-link
             :to="
               `/books/${book.isbn}/` +
               book.title.toLowerCase().replace(/ /g, '-')
             "
-            class="w-32 md:w-32 border rounded-md text-center p-3 hover:bg-gray-100"
+            class="w-32 md:w-32 border rounded-md text-center p-1 hover:bg-gray-100"
             :title="
               book.title + ' by ' + book.authors.fullname ||
               book.authors.profiles.full_name
@@ -254,19 +256,7 @@
             v-for="book in related"
             :key="book.isbn"
           >
-            <img :src="book.img" class="w-3/4 rounded-md inline" />
-            <div class="py-2">
-              <h1 class="text-primary font-bold line-clamp-2">
-                {{ book.title }}
-              </h1>
-              <h3 class="text-sm mt-1">
-                {{
-                  book.authors.fullname ||
-                  book.authors.profiles.full_name ||
-                  "Not available"
-                }}
-              </h3>
-            </div>
+            <img :src="book.img" class="w-full rounded-md inline" />
           </router-link>
         </div>
       </div>
