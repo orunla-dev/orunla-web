@@ -1,13 +1,13 @@
 <template>
   <div class="">
-    <div class="flex items-center gap-1 text-gray-600 mb-5">
+    <div class="flex items-center gap-1 text-gray-600 mb-1">
       <router-link to="/">Home</router-link>
       <i class="icofont-thin-right mt-1 text-xl"></i>
       <p class="font-semibold line-clamp-1">My Lists</p>
     </div>
     <div class="flex gap-3 flex-wrap py-5" v-if="lists.length > 0">
       <div
-        class="w-full h-36 md:w-80 p-2 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
+        class="w-full h-44 md:w-80 p-2 flex-shrink-0 bg-white border rounded-md flex items-start gap-3"
         v-for="book in lists"
         :key="book.books.isbn"
       >

@@ -371,7 +371,7 @@ export default {
   },
   methods: {
     routeToAdmins() {
-      this.$router.push("?action=add_admin");
+      this.$router.push("?action=add_author");
     },
     rate(star) {
       this.book.rating = star;

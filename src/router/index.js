@@ -148,6 +148,12 @@ const routes = [
         component: () => import("../views/Admin/Books.vue"),
         beforeEnter: adminGuard,
       },
+      {
+        path: "/admin/authors",
+        name: "AdminAuthorsPage",
+        component: () => import("../views/Admin/Authors.vue"),
+        beforeEnter: adminGuard,
+      },
     ],
   },
   {

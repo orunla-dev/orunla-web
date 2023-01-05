@@ -60,3 +60,26 @@ export const SUPER_ADMIN_ROUTES = [
     route: "/admin/authors",
   },
 ];
+
+export const CATEGORIES = [
+  {
+    title: "Personal Finance",
+    icon: "http://res.cloudinary.com/orunla/image/upload/v1671639729/books/RichDad-PoorDad_jrz9eu.jpg",
+    color: "#ECB22E",
+  },
+  {
+    title: "Business",
+    icon: "http://res.cloudinary.com/orunla/image/upload/v1671881107/books/What_Got_You_Here_Won_t_Get_You_There_ng6t88.jpg",
+    color: "#36C5F0",
+  },
+  {
+    title: "Economics",
+    icon: "http://res.cloudinary.com/orunla/image/upload/v1671880129/books/how-to-lead_bfmipg.jpg",
+    color: "#2EB67D",
+  },
+  {
+    title: "Parenting",
+    icon: "http://res.cloudinary.com/orunla/image/upload/v1671639729/books/RichDad-PoorDad_jrz9eu.jpg",
+    color: "#E01E5A",
+  },
+];
