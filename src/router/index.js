@@ -83,6 +83,17 @@ const routes = [
         name: "BookPage",
         component: () => import("../views/books/Book.vue"),
       },
+      {
+        // Query is optional
+        path: "/search/:query?",
+        name: "SearchPage",
+        component: () => import("../views/Search/Index.vue"),
+      },
+      // {
+      //   path: "/search/:query",
+      //   name: "SearchResultPage",
+      //   component: () => import("../views/Search/Query.vue"),
+      // },
     ],
   },
   {

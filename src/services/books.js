@@ -7,7 +7,8 @@ export function fetchBooks(range) {
     const { data, error } = await supabase
       .from("books")
       .select(`*, authors(*, profiles(*))`)
-      .range(range.start, range.end);
+      .range(range.start, range.end)
+      .order("created_at", { ascending: true });
     if (error) reject(error);
     resolve(data);
   });
@@ -30,6 +31,28 @@ export function fetchRelatedBooks(category) {
       .from("books")
       .select(`*, authors(*, profiles(*))`)
       .contains("categories", [`${category}`]);
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function searchBookTitle(query) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase.rpc("search_books", {
+      keyword: query,
+    });
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function fetchSearchSuggestions() {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("books")
+      .select(`*, authors(*, profiles(*))`)
+      .order("created_at", { ascending: false })
+      .limit(10);
     if (error) reject(error);
     resolve(data);
   });

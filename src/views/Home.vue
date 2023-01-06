@@ -40,7 +40,7 @@
           </h2>
           <div class="flex justify-start overflow-x-auto gap-5 md:gap-10 py-5">
             <div
-              class="relative w-36 md:w-40 rounded-md flex-shrink-0 overflow-hidden flex flex-col items-center cursor-pointer"
+              class="relative w-32 md:w-40 rounded-md flex-shrink-0 overflow-hidden flex flex-col items-center cursor-pointer"
               v-for="book in item.books"
               :key="book.isbn"
               @click="previewBook(book)"

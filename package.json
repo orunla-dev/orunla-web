@@ -23,6 +23,7 @@
     "register-service-worker": "^1.7.1",
     "sass-loader": "10",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "v-lazy-image": "^2.1.1",
     "vee-validate": "3",
     "vue": "^2.6.11",
     "vue-meta": "^2.4.0",
