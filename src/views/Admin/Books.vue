@@ -133,6 +133,10 @@ export default {
   },
   methods: {
     handleClose() {
+      this.book = {};
+      this.author = {};
+      this.action = "add";
+      this.authorAction = "add";
       this.$router.push("/admin/books");
     },
     async deleteBook(book) {

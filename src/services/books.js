@@ -30,7 +30,8 @@ export function fetchRelatedBooks(category) {
     const { data, error } = await supabase
       .from("books")
       .select(`*, authors(*, profiles(*))`)
-      .contains("categories", [`${category}`]);
+      .contains("categories", [`${category}`])
+      .limit(20);
     if (error) reject(error);
     resolve(data);
   });
