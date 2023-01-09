@@ -171,10 +171,16 @@
           <el-pagination
             background
             layout="prev,  next"
-            :total="count / 50"
-            @current-change="
-              range.start += 50;
-              range.end += 50;
+            :total="count"
+            :page-size="10"
+            @prev-click="
+              range.start -= 10;
+              range.end -= 10;
+              getAllBooks();
+            "
+            @next-click="
+              range.start += 10;
+              range.end += 10;
               getAllBooks();
             "
           >
@@ -207,7 +213,7 @@ export default {
       action: "add",
       range: {
         start: 0,
-        end: 50,
+        end: 9,
       },
       count: 0,
       loading: true,
