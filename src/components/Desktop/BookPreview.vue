@@ -10,12 +10,12 @@
         :style="`background-image:  linear-gradient(rgba(255, 255, 255, 0.5), rgba(0,0,0,1)), url(${book.img}); background-repeat: no-repeat; background-size: cover; background-position: center top;`"
       ></div>
       <i
-        class="icofont-close-circled font-bold text-3xl cursor-pointer absolute top-5 right-5"
+        class="icofont-close-circled font-bold text-3xl text-gray-50 cursor-pointer absolute top-5 right-5"
         @click="$emit('close')"
       ></i>
       <div class="p-5 flex justify-between -mt-24">
         <div class="w-full flex gap-5">
-          <img :src="book.img" class="w-auto h-1/3 rounded-md" />
+          <img :src="book.img" class="w-auto h-3/4 rounded-md shadow-xl" />
           <div class="-mt-2">
             <h2 class="text-3xl text-white font-bold line-clamp-1">
               {{ book.title }}
