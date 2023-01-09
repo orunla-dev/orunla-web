@@ -89,11 +89,11 @@ const routes = [
         name: "SearchPage",
         component: () => import("../views/Search/Index.vue"),
       },
-      // {
-      //   path: "/search/:query",
-      //   name: "SearchResultPage",
-      //   component: () => import("../views/Search/Query.vue"),
-      // },
+      {
+        path: "/categories/:query?",
+        name: "SearchResultPage",
+        component: () => import("../views/Search/Category.vue"),
+      },
     ],
   },
   {

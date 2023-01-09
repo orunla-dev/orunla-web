@@ -25,13 +25,13 @@ export function fetchBook(isbn) {
   });
 }
 
-export function fetchRelatedBooks(category) {
+export function fetchRelatedBooks(category, limit = 20) {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase
       .from("books")
       .select(`*, authors(*, profiles(*))`)
       .contains("categories", [`${category}`])
-      .limit(20);
+      .limit(limit);
     if (error) reject(error);
     resolve(data);
   });

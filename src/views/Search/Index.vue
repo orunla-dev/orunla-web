@@ -44,18 +44,30 @@
           </template>
         </el-skeleton>
       </div>
-      <div v-else class="flex justify-start gap-5 md:gap-10 flex-wrap py-5">
-        <router-link
-          :to="
-            `/books/${book.isbn}/` + book.title.toLowerCase().replace(/ /g, '-')
-          "
-          class="w-36 md:w-32 rounded-md border overflow-hidden flex-shrink-1 flex flex-col cursor-pointer"
-          v-for="book in result"
-          :key="book.isbn"
+      <template v-else>
+        <div
+          class="h-full flex flex-col justify-center items-center"
+          v-if="result.length === 0"
         >
-          <img :src="book.img" class="w-full rounded-md" />
-        </router-link>
-      </div>
+          <img src="@/assets/svgs/Search.svg" class="w-1/2" />
+          <h1 class="text-2xl">
+            No search result for '{{ $route.query.q || $route.params.query }}'
+          </h1>
+        </div>
+        <div class="flex justify-start gap-5 md:gap-10 flex-wrap py-5" v-else>
+          <router-link
+            :to="
+              `/books/${book.isbn}/` +
+              book.title.toLowerCase().replace(/ /g, '-')
+            "
+            class="w-36 md:w-32 rounded-md border overflow-hidden flex-shrink-1 flex flex-col cursor-pointer"
+            v-for="book in result"
+            :key="book.isbn"
+          >
+            <img :src="book.img" class="w-full rounded-md" />
+          </router-link>
+        </div>
+      </template>
     </template>
     <template v-else>
       <div class="my-5">
@@ -148,6 +160,11 @@ export default {
     if (this.query === "") {
       this.getSearchSuggestions();
     }
+  },
+  metaInfo() {
+    return {
+      title: this.query ? `Search: ${this.query}` : "Search",
+    };
   },
 };
 </script>
