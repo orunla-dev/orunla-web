@@ -35,7 +35,7 @@
       </router-link>
     </div>
     <div
-      class="shadow rounded-lg w-1/4 h-96 overflow-hidden absolute top-20 right-32 p-5 bg-white"
+      class="shadow rounded-lg w-2/6 h-96 overflow-hidden absolute top-20 right-32 p-5 bg-white"
       v-if="notification"
     >
       <div
@@ -50,17 +50,24 @@
       <div class="overflow-y-auto h-5/6 py-5">
         <template v-if="notifications.length > 0">
           <div
-            class="bg-gray-100 p-3 rounded-md mb-2 mr-2"
+            class="hover:bg-gray-100 cursor-pointer p-3 border-b mb-2 mr-2 notification"
             v-for="items in notifications"
             :key="items.id"
+            @click="markNotification(items)"
           >
-            <div class="flex justify-between items-center mb-3">
-              <h3 class="font-semibold text-sm">{{ items.heading }}</h3>
-              <i class="text-xs text-gray-400">{{
-                moment(items.time).format("DD-MMMM-YYYY")
-              }}</i>
+            <div class="flex justify-start items-start mb-3 gap-3">
+              <i
+                class="icofont-flash text-4xl text-secondary"
+                v-if="items.type === 'Book'"
+              />
+              <!-- <h3 class="font-semibold text-sm">{{ items.heading }}</h3> -->
+              <div>
+                <p class="text-md line-clamp-5 mb-2" v-html="items.message" />
+                <i class="text-xs text-gray-400">
+                  {{ moment(items.time).fromNow() }}
+                </i>
+              </div>
             </div>
-            <p class="">{{ items.message }}</p>
           </div>
         </template>
         <div class="h-full w-full flex items-center justify-center" v-else>
@@ -81,7 +88,8 @@
 </template>
 
 <script>
-import { loadAvatar } from "@/services/profile";
+import { loadAvatar, deleteNotification } from "@/services/profile";
+
 export default {
   name: "DesktopHeader",
   data() {
@@ -108,6 +116,20 @@ export default {
         .catch((error) => {
           console.log(error);
           this.$message.error("Cannot get image now. Please try again");
+        });
+    },
+    async markNotification(item) {
+      await deleteNotification(item.id)
+        .then(() => {
+          let notifications = this.notifications.filter(function (el) {
+            return el.id !== item.id;
+          });
+          this.$store.commit("SET_NOTIFICATION", notifications);
+          this.notification = false;
+          this.$router.push(item.url);
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

@@ -95,3 +95,14 @@ export function uploadToCloudinary(payload) {
     payload
   );
 }
+
+export function deleteNotification(id) {
+  return new Promise(async (resolve, reject) => {
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id);
+    if (error) reject(error);
+    resolve();
+  });
+}

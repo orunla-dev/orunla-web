@@ -41,9 +41,40 @@ export function deleteABook(isbn) {
   });
 }
 
+export function fetchAuthors(range) {
+  return new Promise(async (resolve, reject) => {
+    const { data, count, error } = await supabase
+      .from("authors")
+      .select("*, profiles(*)", { count: "estimated" })
+      .range(range.start, range.end)
+      .order("updated_at", { ascending: true });
+    if (error) reject(error);
+    resolve({ data: data, count: count });
+  });
+}
+
 export function addAnAuthor(payload) {
   return new Promise(async (resolve, reject) => {
     const { error } = await supabase.from("authors").insert({ ...payload });
+    if (error) reject(error);
+    resolve();
+  });
+}
+
+export function searchUsersWithGenre(category) {
+  return new Promise(async (resolve, reject) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("uid")
+      .contains("my_genres", [`${category}`]);
+    if (error) reject(error);
+    resolve(data);
+  });
+}
+
+export function batchInsert(table, data) {
+  return new Promise(async (resolve, reject) => {
+    const { error } = await supabase.from(table).insert([...data]);
     if (error) reject(error);
     resolve();
   });

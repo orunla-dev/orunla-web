@@ -26,92 +26,177 @@
       :data="author"
       :action="authorAction"
     />
-    <el-table :data="books" style="width: 100%" v-loading="loading">
-      <el-table-column label="ISBN" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.isbn }}
-        </template>
-      </el-table-column>
-      <el-table-column label="" width="100">
-        <template slot-scope="scope">
-          <div class="flex justify-center gap-2">
-            <i
-              class="icofont-read-book text-xl"
-              :class="scope.row.paperback ? 'text-green-500' : 'text-red-500'"
-              :title="
-                scope.row.paperback
-                  ? 'Paperback available'
-                  : 'Paperback not available'
-              "
-            ></i>
-            <i
-              class="icofont-ebook text-xl"
-              :class="scope.row.ebook ? 'text-green-500' : 'text-red-500'"
-              :title="
-                scope.row.paperback ? 'Ebook available' : 'Ebook not available'
-              "
-            ></i>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="Title" width="300">
-        <template slot-scope="scope">
-          {{ scope.row.title }}:
-          <small class="line-clamp-1" :title="scope.row.sub_title">
-            {{ scope.row.sub_title }}
-          </small>
-        </template>
-      </el-table-column>
-      <el-table-column label="Author" width="180">
-        <template slot-scope="scope">
-          {{ scope.row.authors.fullname }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Restricted to" width="150">
-        <template slot-scope="scope">
-          {{ scope.row.restricted_to }}
-        </template>
-      </el-table-column>
-      <el-table-column label="">
-        <template slot-scope="scope">
-          <div class="flex gap-3">
-            <i
-              class="text-xl icofont-edit hover:text-primary cursor-pointer"
-              @click="editBook(scope.row)"
-            ></i>
-            <i
-              class="text-xl icofont-ui-delete hover:text-red-500 cursor-pointer"
-              @click="deleteBook(scope.row)"
-            ></i>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="flex justify-end items-center gap-4 mt-10">
-      <div class="">Total: {{ count }}</div>
-      <el-pagination
-        background
-        layout="prev,  next"
-        :total="count / 50"
-        @current-change="
-          range.start += 50;
-          range.end += 50;
-          getAllBooks();
-        "
-      >
-      </el-pagination>
-    </div>
+    <el-tabs v-model="tab" tab-position="top">
+      <el-tab-pane label="Authors" name="authors">
+        <el-table
+          :data="authors"
+          style="width: 100%"
+          v-loading="authorsLoading"
+        >
+          <el-table-column label="Name" width="300">
+            <template slot-scope="scope">
+              <div class="flex items-center gap-5">
+                <v-lazy-image
+                  :src="scope.row.img"
+                  :src-placeholder="placeholder"
+                  class="w-14 h-14 rounded-full"
+                />
+                {{ scope.row.fullname }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Links" width="300">
+            <template slot-scope="scope">
+              <div class="flex gap-5">
+                <a
+                  :href="scope.row.wikipedia_link"
+                  v-if="scope.row.wikipedia_link"
+                >
+                  <i
+                    class="icofont-brand-wikipedia text-xl md:text-2xl text-gray-600"
+                  />
+                </a>
+                <a :href="scope.row.website" v-if="scope.row.website">
+                  <i class="icofont-web text-xl md:text-2xl text-gray-500" />
+                </a>
+                <a :href="scope.row.twitter_url" v-if="scope.row.twitter_url">
+                  <i
+                    class="icofont-twitter text-xl md:text-2xl text-blue-600"
+                  />
+                </a>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="">
+            <template slot-scope="scope">
+              <div class="flex justify-end">
+                <router-link :to="`/authors/${scope.row.uid}`">
+                  <el-button type="secondary" icon="icofont-eye-alt">
+                    View Page
+                  </el-button>
+                </router-link>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="flex justify-end items-center gap-4 mt-10">
+          <div class="">Total: {{ authorsCount }}</div>
+          <el-pagination
+            background
+            layout="prev,  next"
+            :total="authorsCount"
+            :page-size="5"
+            @prev-click="
+              authorsRange.start -= 5;
+              authorsRange.end -= 5;
+              getAllAuthors();
+            "
+            @next-click="
+              authorsRange.start += 5;
+              authorsRange.end += 5;
+              getAllAuthors();
+            "
+          >
+          </el-pagination>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="Books" name="books">
+        <el-table :data="books" style="width: 100%" v-loading="loading">
+          <el-table-column label="ISBN" width="120">
+            <template slot-scope="scope">
+              {{ scope.row.isbn }}
+            </template>
+          </el-table-column>
+          <el-table-column label="" width="100">
+            <template slot-scope="scope">
+              <div class="flex justify-center gap-2">
+                <i
+                  class="icofont-read-book text-xl"
+                  :class="
+                    scope.row.paperback ? 'text-green-500' : 'text-red-500'
+                  "
+                  :title="
+                    scope.row.paperback
+                      ? 'Paperback available'
+                      : 'Paperback not available'
+                  "
+                ></i>
+                <i
+                  class="icofont-ebook text-xl"
+                  :class="scope.row.ebook ? 'text-green-500' : 'text-red-500'"
+                  :title="
+                    scope.row.paperback
+                      ? 'Ebook available'
+                      : 'Ebook not available'
+                  "
+                ></i>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Title" width="300">
+            <template slot-scope="scope">
+              {{ scope.row.title }}:
+              <small class="line-clamp-1" :title="scope.row.sub_title">
+                {{ scope.row.sub_title }}
+              </small>
+            </template>
+          </el-table-column>
+          <el-table-column label="Author" width="180">
+            <template slot-scope="scope">
+              {{ scope.row.authors.fullname }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Restricted to" width="150">
+            <template slot-scope="scope">
+              {{ scope.row.restricted_to }}
+            </template>
+          </el-table-column>
+          <el-table-column label="">
+            <template slot-scope="scope">
+              <div class="flex gap-3">
+                <i
+                  class="text-xl icofont-edit hover:text-primary cursor-pointer"
+                  @click="editBook(scope.row)"
+                ></i>
+                <i
+                  class="text-xl icofont-ui-delete hover:text-red-500 cursor-pointer"
+                  @click="deleteBook(scope.row)"
+                ></i>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="flex justify-end items-center gap-4 mt-10">
+          <div class="">Total: {{ count }}</div>
+          <el-pagination
+            background
+            layout="prev,  next"
+            :total="count / 50"
+            @current-change="
+              range.start += 50;
+              range.end += 50;
+              getAllBooks();
+            "
+          >
+          </el-pagination>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="Users" name="users"> Hello Users </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
-import { fetchBooks, deleteABook } from "@/services/admin";
+import { fetchBooks, deleteABook, fetchAuthors } from "@/services/admin";
+import IMG from "@/assets/Orunla.png";
+import VLazyImage from "v-lazy-image/v2";
 
 export default {
-  name: "AdminBooksPage",
+  name: "AdminPage",
   components: {
     addNewBookModal: () => import("@/components/Admin/AddNewBook"),
     addNewAuthorModal: () => import("@/components/Admin/AddNewAuthor"),
+    VLazyImage,
   },
   data() {
     return {
@@ -120,16 +205,28 @@ export default {
       books: [],
       book: {},
       action: "add",
-      loading: true,
-      authors: [],
-      author: {},
-      authorAction: "add",
       range: {
         start: 0,
         end: 50,
       },
       count: 0,
+      loading: true,
+      authors: [],
+      author: {},
+      authorAction: "add",
+      authorsRange: {
+        start: 0,
+        end: 4,
+      },
+      authorsCount: 0,
+      authorsLoading: true,
+      tab: "books",
     };
+  },
+  computed: {
+    placeholder() {
+      return IMG;
+    },
   },
   methods: {
     handleClose() {
@@ -190,9 +287,22 @@ export default {
         });
       this.loading = false;
     },
+    async getAllAuthors() {
+      this.authorsLoading = true;
+      await fetchAuthors(this.authorsRange)
+        .then((response) => {
+          this.authors = response.data;
+          this.authorsCount = response.count;
+        })
+        .catch((error) => {
+          this.$message.error(error);
+        });
+      this.authorsLoading = false;
+    },
   },
-  mounted() {
-    this.getAllBooks();
+  async mounted() {
+    await this.getAllBooks();
+    await this.getAllAuthors();
   },
   metaInfo: {
     title: "Admin",

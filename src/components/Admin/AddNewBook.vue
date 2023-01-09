@@ -320,7 +320,12 @@
 <script>
 import { fetchAllAuthors } from "@/services/authors.js";
 import { uploadToCloudinary } from "@/services/profile.js";
-import { addABook, saveABook } from "@/services/admin.js";
+import {
+  addABook,
+  saveABook,
+  batchInsert,
+  searchUsersWithGenre,
+} from "@/services/admin.js";
 
 import imageCompression from "browser-image-compression";
 
@@ -437,7 +442,8 @@ export default {
       this.submitting = true;
       this.book.categories = this.book.categories.split(",");
       await addABook(this.book)
-        .then(() => {
+        .then(async () => {
+          await this.getUsers();
           this.$emit("created");
           this.$message.success("Book added");
         })
@@ -463,6 +469,42 @@ export default {
           this.$message.error(error);
         });
       this.submitting = false;
+    },
+    // Send notification to each user with the category
+    async getUsers() {
+      this.book.categories.forEach(async (category) => {
+        await searchUsersWithGenre(category)
+          .then((response) => {
+            const users = response.map((a) => a.uid);
+            this.sendNotification(users);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    },
+    async sendNotification(users) {
+      const vm = this;
+      let payload = [];
+      users.forEach((uid) => {
+        payload.push({
+          profiles_id: uid,
+          heading: "",
+          message: `A new book has been added <b>${vm.book.title}</b>. ${vm.book.description}`,
+          type: "Book",
+          url: `/books/${vm.book.isbn}`,
+          img: `${vm.book.img}`,
+          cta_text: "Read now",
+        });
+      });
+      await batchInsert("notifications", payload)
+        .then(() => {
+          console.log("Notification sent!");
+        })
+        .catch((error) => {
+          this.$message.error("An error occured while sending notifications");
+          console.log(error);
+        });
     },
   },
   data() {

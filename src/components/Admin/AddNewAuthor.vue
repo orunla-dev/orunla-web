@@ -206,6 +206,7 @@ export default {
       this.submitting = true;
       await addAnAuthor(this.author)
         .then(() => {
+          this.$emit("created");
           this.$message.success(`${this.author.fullname} added`);
         })
         .catch((error) => {
