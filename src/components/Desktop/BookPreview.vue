@@ -15,13 +15,13 @@
       ></i>
       <div class="p-5 flex justify-between -mt-24">
         <div class="w-full flex gap-5">
-          <img :src="book.img" class="w-auto h-3/4 rounded-md shadow-xl" />
+          <img :src="book.img" class="w-32 h-52 rounded-md shadow-xl" />
           <div class="-mt-2">
             <h2 class="text-3xl text-white font-bold line-clamp-1">
               {{ book.title }}
             </h2>
             <p class="text-gray-100 line-clamp-2">{{ book.sub_title }}</p>
-            <div class="mt-8">
+            <div class="mt-8 mb-10 h-40 overflow-y-auto">
               <h3 class="font-bold">About</h3>
               {{ book.description }}
             </div>
