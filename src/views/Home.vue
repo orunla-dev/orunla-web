@@ -36,7 +36,7 @@
           v-if="item.books.length !== 0"
         >
           <h2 class="font-bold text-primary text-xl">
-            Books on {{ item.genre }}
+            Suggested books on {{ item.genre }}
           </h2>
           <div class="flex justify-start overflow-x-auto gap-5 md:gap-10 py-5">
             <div
@@ -56,6 +56,13 @@
                 :alt="book.title"
               />
             </div>
+            <template v-if="item.books.length <= 3">
+              <div
+                class="w-32 md:w-40 flex-shrink-0 bg-gray-100 rounded-md"
+                v-for="i in Math.abs(3 - item.books.length)"
+                :key="i"
+              />
+            </template>
           </div>
         </div>
       </template>
@@ -125,7 +132,7 @@ export default {
     async fetchAllBooks() {
       this.loading = true;
       this.user.my_genres.forEach(async (genre) => {
-        await fetchRelatedBooks(genre)
+        await fetchRelatedBooks(genre, 3)
           .then((response) => {
             this.books.push({ genre: genre, books: response });
           })

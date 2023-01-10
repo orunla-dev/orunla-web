@@ -118,7 +118,7 @@
               <div class="w-1/2">
                 <router-link :to="`/read/${book.isbn}`">
                   <el-button type="primary" class="w-full font-bold">
-                    Read Online
+                    {{ buttonText }}
                   </el-button>
                 </router-link>
               </div>
@@ -154,7 +154,7 @@
           <div class="w-1/2">
             <router-link :to="`/read/${book.isbn}`">
               <el-button type="primary" class="w-full font-bold">
-                Read Online
+                {{ buttonText }}
               </el-button>
             </router-link>
           </div>
@@ -238,17 +238,20 @@
           </div>
         </div>
       </div>
-      <div class="md:w-1/3 mt-5 md:mt-0 md:bg-gray-50 md:p-5 rounded-lg">
+      <div
+        class="md:w-1/3 mt-5 md:mt-0 md:bg-gray-50 md:p-5 rounded-lg"
+        v-if="related.length > 0"
+      >
         <h2 class="text-xl font-bold">Related titles</h2>
         <div
-          class="flex justify-start item-start gap-10 md:gap-3 flex-wrap mt-5"
+          class="flex justify-start item-start gap-3 md:gap-3 mt-5 overflow-x-auto"
         >
           <router-link
             :to="
               `/books/${book.isbn}/` +
               book.title.toLowerCase().replace(/ /g, '-')
             "
-            class="w-32 md:w-32 border rounded-md text-center p-1 hover:bg-gray-100"
+            class="w-32 md:w-32 border rounded-md text-center p-1 hover:bg-gray-100 flex-shrink-0"
             :title="
               book.title + ' by ' + book.authors.fullname ||
               book.authors.profiles.full_name
@@ -389,6 +392,7 @@ export default {
       ratingMessage: "",
       submitting: false,
       userCanReview: false,
+      buttonText: "Read Online",
     };
   },
   computed: {
@@ -429,7 +433,7 @@ export default {
         });
     },
     async fetchRelatedTitles(category) {
-      await fetchRelatedBooks(category)
+      await fetchRelatedBooks(category, 4)
         .then((response) => {
           response.forEach((book) => {
             if (book.isbn !== this.book.isbn) {
@@ -556,8 +560,10 @@ export default {
         this.$route.params.isbn
       )
         .then((response) => {
-          if (response[0].completed) {
-            this.userCanReview = true;
+          if (response[0]) {
+            response[0].cmpleted
+              ? (this.userCanReview = true)
+              : (this.buttonText = "Continue Reading");
           }
         })
         .catch((error) => {
@@ -569,6 +575,7 @@ export default {
     $route() {
       if (!this.$route.query.action) {
         this.loading = true;
+        this.userCanReview = false;
         this.fetchTitle();
         this.fetchUserRead();
       }
