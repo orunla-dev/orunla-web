@@ -33,7 +33,7 @@
           style="width: 100%"
           v-loading="authorsLoading"
         >
-          <el-table-column label="Name" width="300">
+          <el-table-column label="Name" width="250">
             <template slot-scope="scope">
               <div class="flex items-center gap-5">
                 <v-lazy-image
@@ -45,7 +45,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="Links" width="300">
+          <el-table-column label="Links" width="250">
             <template slot-scope="scope">
               <div class="flex gap-5">
                 <a
@@ -67,7 +67,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="">
+          <el-table-column label="" width="470">
             <template slot-scope="scope">
               <div class="flex justify-end">
                 <router-link :to="`/authors/${scope.row.uid}`">
