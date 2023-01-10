@@ -12,16 +12,12 @@
           @click.prevent="notification = !notification"
           class="relative"
         >
-          <i
-            class="icofont-notification text-gray-700 text-3xl"
-            :class="notification === true ? 'text-secondary' : ''"
-          ></i>
-          <span
-            v-if="notifications.length > 0"
-            class="absolute -top-3 left-5 bg-red-500 text-white px-1 rounded-full text-xs"
-          >
-            {{ notifications.length }}
-          </span>
+          <el-badge :value="notifications.length" :max="99" class="mr-1">
+            <i
+              class="icofont-notification text-gray-700 text-3xl"
+              :class="notification === true ? 'text-secondary' : ''"
+            ></i>
+          </el-badge>
         </a>
       </div>
       <router-link to="/profile">
