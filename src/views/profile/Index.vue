@@ -32,7 +32,7 @@
         </p>
       </div>
       <div
-        class="flex md:justify-between mb-5 h-96 py-5 md:py-0 overflow-scroll md:h-auto md:overflow-hidden flex-wrap gap-5 md:gap-10 mt-5"
+        class="flex md:justify-between mb-5 h-96 py-5 md:py-0 overflow-scroll md:h-auto md:overflow-hidden flex-wrap gap-2 md:gap-10 mt-5"
         v-else
       >
         <div
