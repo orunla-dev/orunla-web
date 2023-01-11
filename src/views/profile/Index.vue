@@ -54,6 +54,14 @@
         </div>
       </div>
     </div>
+    <div class="mt-20 mb-5">
+      <div
+        class="text-gray-400 hover:bg-gray-400 hover:text-gray-700 text-2xl font-semibold text-center border p-3 rounded"
+        @click="logUserOut()"
+      >
+        Log out
+      </div>
+    </div>
     <!--- div
       class="bg-red-50 p-2 border border-red-200 rounded-md flex justify-between items-center mt-3"
       v-if="!user.isEmailVerified"
@@ -67,6 +75,7 @@
 </template>
 
 <script>
+import { supabase } from "@/config/supabase";
 import { loadUserReadHistory, loadAvatar } from "@/services/profile";
 import { UID } from "@/utils/constants";
 
@@ -99,6 +108,20 @@ export default {
           console.log(error);
           this.$message.error("Cannot get image now. Please try again");
         });
+    },
+    async logUserOut() {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        this.$message.error(error);
+      } else {
+        // delete localStorage and return vuex to default
+        localStorage.removeItem(UID);
+        this.$store.commit("SET_USER", {});
+        this.$store.commit("SET_USER_LIST", []);
+        this.$store.commit("SET_NOTIFICATION", []);
+        this.$message.info("You've been logged out.");
+        this.$router.push("/auth");
+      }
     },
   },
   computed: {
