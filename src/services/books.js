@@ -37,6 +37,20 @@ export function fetchRelatedBooks(category, limit = 20) {
   });
 }
 
+export function fetchUsersReadingABook(isbn) {
+  return new Promise(async (resolve, reject) => {
+    const { data, count, error } = await supabase
+      .from("now_reading")
+      .select(`profiles(uid, full_name, username, avatar_url)`, {
+        count: "estimated",
+      })
+      .match({ books_id: isbn, completed: false })
+      .limit(3);
+    if (error) reject(error);
+    resolve({ data, count });
+  });
+}
+
 export function searchBookTitle(query) {
   return new Promise(async (resolve, reject) => {
     const { data, error } = await supabase.rpc("search_books", {

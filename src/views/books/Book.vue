@@ -150,6 +150,59 @@
             </div>
           </div>
         </div>
+        <div class="border-b">
+          <div class="p-5 flex items-center gap-2" v-if="otherReadersTotal > 0">
+            <div class="flex relative">
+              <img
+                :src="otherReaders[0].avatar"
+                class="w-12 h-auto rounded-full border-4 border-white z-30"
+              />
+              <div
+                class="w-12 h-14 rounded-full bg-green-200 border-4 border-white -ml-10 z-20"
+                v-if="otherReadersTotal > 1"
+              />
+              <div
+                class="w-12 h-14 rounded-full bg-green-500 border-4 border-white -ml-10 z-10"
+                v-if="otherReadersTotal > 2"
+              />
+            </div>
+            <div class="">
+              {{
+                otherReadersTotal === 1
+                  ? `${otherReaders[0].username} ${
+                      otherReaders[0].username === "You" ? "are" : "is"
+                    } reading this book`
+                  : otherReadersTotal === 2
+                  ? `${otherReaders[0].username} and ${otherReaders[1].username} are reading this book`
+                  : otherReadersTotal === 3
+                  ? `${otherReaders[0].username}, ${otherReaders[1].username} and ${otherReaders[2].username} are reading this book`
+                  : `${otherReaders[0].username}, ${
+                      otherReaders[1].username
+                    }, ${otherReaders[2].username} and ${
+                      otherReadersTotal - 3
+                    } other users are reading this book`
+              }}
+            </div>
+          </div>
+          <div class="p-5 relative" v-else>
+            <div class="flex gap-3 relative filter blur-sm">
+              <div class="flex">
+                <div
+                  class="w-12 h-12 rounded-full bg-green-200 border-4 border-white z-10"
+                />
+                <div
+                  class="w-12 h-12 rounded-full bg-green-200 border-4 border-white -ml-6"
+                />
+              </div>
+              XYZ and 300 others are reading this book
+            </div>
+            <div
+              class="absolute top-0 right-0 left-0 bottom-0 z-20 bg-gray-50 bg-opacity-50 text-xl p-5"
+            >
+              Be the first to appear as reading this book, click below to start.
+            </div>
+          </div>
+        </div>
         <div class="my-5 flex gap-5 md:hidden">
           <div class="w-1/2">
             <router-link :to="`/read/${book.isbn}`">
@@ -365,9 +418,10 @@ import {
   fetchBookReview,
   addReview,
   fetchRelatedBooks,
+  fetchUsersReadingABook,
 } from "@/services/books";
 
-import { loadFromUserHistory } from "@/services/profile";
+import { loadFromUserHistory, loadAvatar } from "@/services/profile";
 
 import { UID } from "@/utils/constants";
 
@@ -393,6 +447,8 @@ export default {
       submitting: false,
       userCanReview: false,
       buttonText: "Read Online",
+      otherReaders: [],
+      otherReadersTotal: 0,
     };
   },
   computed: {
@@ -500,6 +556,37 @@ export default {
           this.$message.error("Failed to load book reviews");
         });
     },
+    async fetchReaders() {
+      await fetchUsersReadingABook(this.$route.params.isbn)
+        .then((response) => {
+          this.otherReadersTotal = response.count;
+          response.data.forEach(async (reader) => {
+            this.otherReaders.push({
+              avatar: await this.loadUserAvatar(reader.profiles.avatar_url),
+              username:
+                reader.profiles.uid === localStorage.getItem(UID)
+                  ? "You"
+                  : reader.profiles.username,
+              full_name: reader.profiles.full_name,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async loadUserAvatar(url) {
+      let img;
+      await loadAvatar(url)
+        .then((response) => {
+          img = response.signedUrl;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$message.error("Cannot get image now. Please try again");
+        });
+      return img;
+    },
     shareBook() {
       const data = {
         title: `${this.book.title} - ${
@@ -578,6 +665,7 @@ export default {
         this.userCanReview = false;
         this.fetchTitle();
         this.fetchUserRead();
+        this.fetchReaders();
       }
     },
   },
@@ -589,6 +677,7 @@ export default {
       }
     });
     this.fetchUserRead();
+    this.fetchReaders();
   },
   metaInfo() {
     return {
